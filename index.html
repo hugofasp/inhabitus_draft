@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>INHabitus — Mockup v2</title>
+<title>inHabitus · Mockup v3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -33,6 +33,12 @@
     --lime: #DEF5A8;     /* IN3Domus tech */
     --peach: #F4B988;    /* INOrigens projects */
     --blue-deep: #5B89FF;/* active/CTA */
+
+    /* Footer warm surface (cream half) */
+    --cream: #E2D7BD;          /* deeper manilla — clearly different from --ink-2 */
+    --cream-paper: #F0E9D6;    /* input fill on cream */
+    --ink-soft: rgba(10,11,13,0.55);
+    --ink-line: rgba(10,11,13,0.22);
 
     /* Type */
     --font-display: 'Space Grotesk', system-ui, sans-serif;
@@ -137,26 +143,18 @@
     gap: 32px;
   }
   .nav-logo {
-    display: inline-flex; align-items: center; gap: 0;
+    display: inline-flex; align-items: center; gap: 6px;
+    line-height: 0;
+  }
+  .nav-logo .brand-mark { height: 30px; width: auto; display: block; }
+  .nav-logo sup {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 18px;
-    letter-spacing: -0.01em;
+    font-size: 10px; vertical-align: super; opacity: .65;
+    line-height: 1;
   }
-  .nav-logo .tag {
-    position: relative; padding: 4px 10px 4px 10px;
-    display: inline-block;
-    color: var(--ink);
-    z-index: 1;
-  }
-  .nav-logo .tag::before {
-    content: ''; position: absolute; inset: 0;
-    background: var(--blue);
-    clip-path: var(--tag-clip);
-    z-index: -1;
-  }
-  .nav-logo .rest { padding: 0 6px; }
-  .nav-logo sup { font-size: 9px; vertical-align: super; opacity: .7; }
+  /* Footer brand mark — same SVG, slightly larger for hierarchy */
+  .footer-brand-mark { height: 26px; width: auto; vertical-align: middle; margin-right: 8px; }
 
   .nav-links {
     display: flex; gap: 36px; justify-content: center;
@@ -195,19 +193,23 @@
     transition: background .25s;
   }
   .btn:hover { transform: translateY(-2px); }
-  .btn-primary { color: var(--ink); }
+  .btn-primary { color: var(--ink); transition: transform .35s cubic-bezier(.2,.7,.2,1), color .25s; }
   .btn-primary::before { background: var(--blue); }
-  .btn-primary:hover::before { background: var(--paper); }
+  /* Hover: deepen to the brand blue-deep with light text — keeps the CTA legible
+     (the old `var(--paper)` is actually the dark ink token, which made the button
+     read as black-on-black on hover). */
+  .btn-primary:hover { color: #FAFAF7; }
+  .btn-primary:hover::before { background: var(--blue-deep); }
 
-  .btn-outline { color: var(--paper); border: 1px solid var(--line); padding: 11px 22px; clip-path: var(--pill-clip); }
-  .btn-outline:hover { background: var(--ink-3); }
+  .btn-outline { color: var(--paper); border: 1px solid var(--line); padding: 11px 22px; clip-path: var(--pill-clip); transition: background .25s, color .25s, border-color .25s, transform .35s cubic-bezier(.2,.7,.2,1); }
+  .btn-outline:hover { background: var(--blue-deep); color: #FAFAF7; border-color: var(--blue-deep); }
   .btn-outline::before { display: none; }
 
   /* ===========================================================
      S1 — HERO
      =========================================================== */
   .hero {
-    padding: 160px 0 100px;
+    padding: 160px 0 0;     /* zero bottom — .positioning lives inside .hero and handles its own border */
     position: relative;
     overflow: hidden;
   }
@@ -300,12 +302,41 @@
   }
   .hero-stat:last-child { border-right: 0; }
   .hero-stat .num {
+    display: inline-block;
     font-family: var(--font-display);
     font-size: 64px; font-weight: 500;
     letter-spacing: -0.03em; line-height: 1;
     color: var(--paper);
+    vertical-align: baseline;
   }
   .hero-stat .num sup { font-size: 28px; vertical-align: super; opacity: .7; margin-left: 4px; }
+  /* "≤" prefix — same height + baseline as the digit, lighter weight + muted */
+  .hero-stat .num-prefix {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 64px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--paper-mute);
+    margin-right: 6px;
+    vertical-align: baseline;
+  }
+  .hero-stat .footnote-ref {
+    font-size: 0.5em;
+    color: var(--paper-mute);
+    margin-left: 3px;
+    vertical-align: super;
+  }
+  .hero-stats-footnote {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--paper-mute);
+    margin: 16px 0 0;
+    line-height: 1.5;
+  }
+  .hero-stats-footnote .footnote-mark { color: var(--paper); margin-right: 6px; }
   .hero-stat .label {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -315,43 +346,85 @@
     margin-top: 14px;
   }
 
-  /* Marquee strip */
-  .marquee {
-    margin-top: 60px;
+  /* ============================================================
+     POSITIONING STATEMENT (replaces previous marquee strip)
+     Word-by-word reveal · MMC accent stroke animation
+     ============================================================ */
+  .positioning {
+    margin: 60px 0 0;
     border-top: 1px solid var(--line-soft);
-    border-bottom: 1px solid var(--line-soft);
-    overflow: hidden;
-    padding: 22px 0;
-    display: flex;
-    gap: 80px;
+    border-bottom: 1px solid var(--line);
+    padding: 100px 0 0;            /* zero bottom — flush against next section */
+    background: linear-gradient(180deg, transparent 0%, rgba(184,212,241,0.06) 100%);
   }
-  .marquee-track {
-    display: flex; gap: 80px;
-    animation: marquee 38s linear infinite;
-    white-space: nowrap;
-    flex-shrink: 0;
+  /* Tecnologia: dock directly under positioning, push the eyebrow inside */
+  .mmc {
+    padding-top: 0 !important;
+    margin-top: 0;
   }
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-100%); }
-  }
-  .marquee-item {
+  .mmc .mmc-header { padding-top: 80px; }
+  .positioning-inner { max-width: 1100px; }
+  .positioning-title {
     font-family: var(--font-display);
-    font-size: 28px; font-weight: 400;
-    color: var(--paper-dim);
-    letter-spacing: -0.01em;
-    display: inline-flex; align-items: center; gap: 24px;
+    font-weight: 600;
+    font-size: clamp(38px, 4.6vw, 68px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 22px 0 36px;
+    color: var(--paper);
   }
-  .marquee-item::after {
-    content: ''; width: 8px; height: 8px;
-    background: var(--blue);
-    clip-path: polygon(0 0, 100% 0, 100% 60%, 60% 100%, 0 100%);
+  .pos-word {
+    display: inline-block;
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .65s cubic-bezier(.2,.7,.2,1),
+                transform .65s cubic-bezier(.2,.7,.2,1);
+    margin-right: 0.22em;
   }
+  .positioning.in .pos-word { opacity: 1; transform: none; }
+  .positioning.in .pw-1 { transition-delay: .05s; }
+  .positioning.in .pw-2 { transition-delay: .16s; }
+  .positioning.in .pw-3 { transition-delay: .28s; }
+  .positioning.in .pw-4 { transition-delay: .40s; }
+  .positioning.in .pw-5 { transition-delay: .54s; }
+
+  .pos-acc {
+    position: relative;
+    background-image: linear-gradient(120deg, var(--blue) 0%, var(--blue) 100%);
+    background-repeat: no-repeat;
+    background-size: 0% 0.42em;
+    background-position: 0 88%;
+    transition: background-size 1.4s cubic-bezier(.2,.7,.2,1) .8s;
+    padding: 0 2px;
+    /* Allow wrapping for long English term; each wrapped line gets its own highlight */
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .pos-acc em { font-style: italic; font-weight: 500; }
+  .positioning.in .pos-acc { background-size: 100% 0.42em; }
+
+  .positioning-lede {
+    font-size: clamp(17px, 1.4vw, 21px);
+    line-height: 1.6;
+    color: var(--paper-mute);
+    max-width: 820px;
+  }
+  /* Bold key phrases — styling only, no animation (animation handled per word) */
+  .pos-fade {
+    color: var(--paper);
+    font-weight: 500;
+  }
+  /* Progressive scroll-linked unveil: each word fades in based on scroll progress */
+  .lede-word {
+    opacity: 0;
+    transition: opacity .35s ease;
+  }
+  .lede-word.shown { opacity: 1; }
 
   /* ===========================================================
      S2 — MMC TECHNOLOGY CARDS
      =========================================================== */
-  .mmc { background: var(--ink-2); }
+  /* Organic seam: top starts in projetos' cream (--ink-3) and dissolves into white */
+  .mmc { background: linear-gradient(to bottom, var(--ink-3) 0, #FFFFFF 220px); }
   .mmc-header {
     display: grid; grid-template-columns: 5fr 7fr; gap: 60px;
     align-items: end;
@@ -421,14 +494,28 @@
   }
   .mmc-card:hover .more::after, .mmc-card.active .more::after { transform: translateX(6px); }
 
+  /* Stacking container — all 4 details share the same grid cell so
+     the tallest panel sets the height; swapping does not shift layout */
+  .mmc-details-stack {
+    display: grid;
+    grid-template-areas: "stack";
+    position: relative;
+  }
   .mmc-detail {
+    grid-area: stack;
     background: var(--ink-3);
     border-bottom: 1px solid var(--line);
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height .55s cubic-bezier(.2,.7,.2,1);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .45s cubic-bezier(.2,.7,.2,1),
+                visibility 0s linear .45s;
   }
-  .mmc-detail.open { max-height: 720px; }
+  .mmc-detail.open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity .45s cubic-bezier(.2,.7,.2,1),
+                visibility 0s linear 0s;
+  }
   .mmc-detail-inner {
     padding: 56px 32px;
     display: grid; grid-template-columns: 4fr 5fr 3fr; gap: 48px;
@@ -469,6 +556,12 @@
     overflow: hidden; background: var(--ink-4);
   }
   .mmc-detail .panel-img img { width: 100%; height: 100%; object-fit: cover; }
+  .mmc-detail-cta {
+    display: inline-flex; align-items: center;
+    margin-top: 12px;
+    color: var(--ink);
+    border-color: var(--ink-line);
+  }
 
   /* ===========================================================
      S3 — BUSINESS MODEL
@@ -479,6 +572,16 @@
   }
   .model-text {
     padding-right: 60px;
+  }
+  /* Left column sits over the aerial photo — pull the muted lede up to
+     the full ink color and add a hair of weight so it stays readable. */
+  #modelo .model-text .section-lede {
+    color: var(--paper);
+    font-weight: 500;
+  }
+  .model-text .model-cta {
+    display: inline-flex; align-items: center;
+    margin: 6px 0 24px;
   }
   .model-text .quote {
     margin-top: 40px;
@@ -494,6 +597,11 @@
     gap: 0;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
+    /* Frosted paper surface so the closed pillars don't read straight off
+       the aerial backdrop. Keeps the section airy but the copy crisp. */
+    background: rgba(255,255,255,0.62);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
   }
   .model-pillar {
     padding: 28px 0;
@@ -748,206 +856,459 @@
   }
 
   /* ===========================================================
-     S7 — PROJETOS
-     =========================================================== */
-  .projects-header {
-    display: grid; grid-template-columns: 6fr 6fr; gap: 60px;
-    align-items: end; margin-bottom: 60px;
-  }
-
-  .project-featured {
-    display: grid; grid-template-columns: 7fr 5fr; gap: 0;
-    border: 1px solid var(--line);
-    margin-bottom: 60px;
-    background: var(--ink-2);
-  }
-  .project-featured-img {
-    position: relative; aspect-ratio: 4/3; overflow: hidden;
-  }
-  .project-featured-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s ease; }
-  .project-featured:hover .project-featured-img img { transform: scale(1.04); }
-  .project-tag-overlay {
-    position: absolute; top: 22px; left: 22px;
-    background: var(--peach);
-    color: var(--ink);
-    padding: 7px 14px;
-    clip-path: polygon(0 0, 100% 0, 100% 60%, 90% 100%, 0 100%);
-    font-family: var(--font-mono);
-    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-  }
-  .project-featured-info {
-    padding: 40px 36px;
-    display: flex; flex-direction: column; justify-content: space-between;
-  }
-  .project-featured h3 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 36px;
-    line-height: 1.05;
-    margin: 0 0 16px;
-    letter-spacing: -0.02em;
-  }
-  .project-meta {
-    display: grid; grid-template-columns: auto 1fr; gap: 8px 20px;
-    font-size: 13px;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    padding: 18px 0;
-    margin: 24px 0;
-  }
-  .project-meta dt { color: var(--paper-mute); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 0; }
-  .project-meta dd { margin: 0; padding: 4px 0; color: var(--paper); }
-
-  .project-typologies {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
-    border-top: 1px solid var(--line);
-  }
-  .typology {
-    padding: 28px 24px 32px;
-    border-right: 1px solid var(--line);
-    transition: background .35s;
-  }
-  .typology:last-child { border-right: 0; }
-  .typology:hover { background: var(--ink-2); }
-  .typology .ttag {
-    display: inline-block;
-    background: var(--peach); color: var(--ink);
-    padding: 5px 11px;
-    clip-path: polygon(0 0, 100% 0, 100% 60%, 86% 100%, 0 100%);
-    font-family: var(--font-mono);
-    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-  .typology .area {
-    font-family: var(--font-display);
-    font-size: 38px; font-weight: 500;
-    line-height: 1; letter-spacing: -0.025em;
-    margin: 0 0 12px;
-  }
-  .typology .area sub { font-size: 14px; opacity: .65; vertical-align: baseline; }
-  .typology .desc {
-    color: var(--paper-mute); font-size: 13px; line-height: 1.55;
-    margin: 0 0 18px;
-  }
-  .typology .areas {
-    list-style: none; padding: 0; margin: 0;
-    border-top: 1px solid var(--line-soft); padding-top: 14px;
-  }
-  .typology .areas li {
-    display: flex; justify-content: space-between;
-    font-family: var(--font-mono); font-size: 11px;
-    padding: 5px 0;
-    color: var(--paper-mute); letter-spacing: 0.05em;
-  }
-  .typology .areas li span { color: var(--paper); }
-
-  .project-pipeline {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-    margin-top: 60px;
-  }
-  .project-ghost {
-    aspect-ratio: 4/3;
-    background: var(--ink-2);
-    border: 1px dashed var(--line);
-    padding: 28px;
-    position: relative;
-    display: flex; flex-direction: column; justify-content: space-between;
-    transition: background .35s;
-  }
-  .project-ghost:hover { background: var(--ink-3); }
-  .project-ghost .ghost-tag {
-    font-family: var(--font-mono);
-    font-size: 10px; letter-spacing: 0.2em;
-    color: var(--paper-mute); text-transform: uppercase;
-  }
-  .project-ghost h4 {
-    font-family: var(--font-display);
-    font-size: 26px; font-weight: 400;
-    margin: 0; color: var(--paper-mute); letter-spacing: -0.01em;
-    line-height: 1.1;
-  }
-  .project-ghost .yr {
-    font-family: var(--font-mono);
-    font-size: 11px; letter-spacing: 0.16em;
-    color: var(--paper-dim);
-  }
-
-  /* ===========================================================
-     S8 — FOOTER
+     S8 — FOOTER (minimal: form + contacts + anchors + T&Cs)
      =========================================================== */
   .footer {
     background: var(--ink-2);
-    padding: 100px 0 50px;
+    padding: 100px 0 40px;
     margin-top: 0;
     border-top: 1px solid var(--line);
   }
-  .footer-cta {
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 60px;
-    margin-bottom: 60px;
-    display: grid; grid-template-columns: 7fr 5fr; gap: 60px;
-    align-items: end;
+  /* Two-tone footer: dark info half stays on the footer's ink-2 bg.
+     The cream slab is painted by the form-col itself with a full-bleed
+     ::before so it extends past the wrap to the viewport edge. */
+  .footer-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-bottom: 56px;
+    align-items: stretch;
   }
-  .footer-cta h2 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(40px, 5vw, 76px);
-    line-height: 1; letter-spacing: -0.03em;
-    margin: 0;
-  }
-  .footer-cta-actions { display: flex; flex-direction: column; gap: 14px; }
-
-  .footer-cols {
-    display: grid; grid-template-columns: 4fr 2fr 2fr 2fr; gap: 40px;
-    margin-bottom: 80px;
-  }
-  .footer-cols h6 {
+  .footer h6 {
     font-family: var(--font-mono);
     font-size: 11px; letter-spacing: 0.18em;
-    color: var(--paper-mute); margin: 0 0 18px; text-transform: uppercase;
+    color: var(--paper-mute);
+    margin: 0 0 18px;
+    text-transform: uppercase;
+    font-weight: 400;
   }
-  .footer-cols ul { list-style: none; padding: 0; margin: 0; }
-  .footer-cols li { padding: 4px 0; font-size: 14px; color: var(--paper); }
-  .footer-cols li a { color: var(--paper); transition: color .25s; }
-  .footer-cols li a:hover { color: var(--blue); }
-  .footer-blurb { color: var(--paper-mute); font-size: 14px; line-height: 1.6; max-width: 38ch; margin: 0 0 20px; }
 
-  .footer-mark {
+  /* Info column (left, dark half) — 2 × 2 grid:
+     row 1 → Contactos | Social
+     row 2 → Secções   | Media   */
+  .footer-info-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 40px;
+    row-gap: 44px;
+    align-items: start;
+    padding-right: 56px;
+  }
+  .footer-info-col .footer-block { min-width: 0; }
+
+  /* Contacts list */
+  .footer-contact { list-style: none; padding: 0; margin: 0; }
+  .footer-contact li {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 0 0 18px;
+    font-size: 14px; color: var(--paper);
+    line-height: 1.5;
+  }
+  .footer-contact li:last-child { padding-bottom: 0; }
+  .footer-contact .ff-k {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--paper-mute);
+  }
+  .footer-contact a {
+    color: var(--paper);
+    transition: color .25s;
+    border-bottom: 1px solid transparent;
+  }
+  .footer-contact a:hover {
+    color: var(--blue-deep);
+    border-bottom-color: var(--blue-deep);
+  }
+  .ff-tel-row .ff-tel-wrap {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .ff-whatsapp {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--blue);
+    color: var(--ink) !important;
+    padding: 5px 11px 5px 9px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; font-weight: 500;
+    border-bottom: 0 !important;
+    transition: background .25s, transform .25s;
+  }
+  .ff-whatsapp:hover {
+    background: var(--blue-deep) !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+  }
+  .ff-whatsapp svg { display: block; }
+
+  /* Social with arrow */
+  .footer-social { list-style: none; padding: 0; margin: 0; }
+  .footer-social li { padding: 6px 0; font-size: 14px; }
+  .footer-social a {
+    display: flex; align-items: center; justify-content: space-between;
+    color: var(--paper);
+    transition: color .25s;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(10,11,13,0.10);
+    max-width: 200px;
+  }
+  .footer-social a:hover { color: var(--blue-deep); }
+  .footer-social .arrow {
+    font-family: var(--font-mono);
+    transition: transform .35s cubic-bezier(.2,.7,.2,1);
+    opacity: 0.55;
+  }
+  .footer-social a:hover .arrow { transform: translateX(4px); opacity: 1; }
+
+  /* Anchor list */
+  .footer-anchors { list-style: none; padding: 0; margin: 0; }
+  .footer-anchors li { padding: 6px 0; font-size: 14px; }
+  .footer-anchors a {
+    color: var(--paper);
+    transition: color .25s, padding-left .35s cubic-bezier(.2,.7,.2,1);
+    display: inline-block;
+  }
+  .footer-anchors a:hover {
+    color: var(--blue-deep);
+    padding-left: 8px;
+  }
+
+  /* Media block */
+  .footer-media { list-style: none; padding: 0; margin: 0; }
+  .footer-media li { padding: 4px 0; }
+  .footer-media a {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px;
+    padding: 10px 12px;
+    border: 1px solid rgba(10,11,13,0.16);
+    color: var(--paper);
+    transition: border-color .25s, background .25s, transform .25s;
+    background: rgba(10,11,13,0.025);
+  }
+  .footer-media a:hover {
+    border-color: var(--blue-deep);
+    background: rgba(184,212,241,0.35);
+    transform: translateY(-1px);
+  }
+  .ff-media-label { display: flex; flex-direction: column; gap: 4px; }
+  .ff-media-title { font-size: 14px; color: var(--paper); line-height: 1.2; }
+  .ff-media-meta {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--paper-mute);
+  }
+  .ff-media-icon {
+    font-family: var(--font-mono);
+    color: var(--blue);
+    opacity: 0.75;
+    transition: opacity .25s, transform .25s;
+  }
+  .footer-media a:hover .ff-media-icon { opacity: 1; transform: translateY(-1px); }
+
+  /* ---- Form module (right, cream half) ---------------------------------
+     The cream slab is painted by ::before, bleeding from the column's
+     left edge to the viewport's right edge. No card chrome — the
+     half-split itself is the visual frame. Text reads in ink for clarity. */
+  .footer-form-col {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    padding: 0 0 0 64px;
+  }
+  .footer-form-col::before {
+    content: "";
+    position: absolute;
+    top: -100px;     /* extend up across the footer's padding-top */
+    bottom: -56px;   /* down to .footer-bottom border-top */
+    left: 0;
+    right: calc(50% - 50vw); /* bleed to the right viewport edge */
+    background: var(--cream);
+    z-index: 0;
+  }
+  .footer-form-col > * { position: relative; z-index: 1; }
+  /* ---- Footer form, shaped like the Inhabitus brand cut-corner motif ----
+     The card itself wears the cut-corner polygon used across the site
+     (hero, cards, buttons). Two stacked layers give the shape a crisp 1px
+     edge along every side — including the diagonal cut — which a single
+     border + clip-path cannot do on its own. */
+  .form-card {
+    position: relative;
+    isolation: isolate;
+    padding: 28px 32px 44px;
+    background: transparent;
+    border: 0;
+    color: var(--ink);
+    width: 100%;
+    max-width: 480px;
+    --brand-cut: 40px;
+    --brand-clip: polygon(0 0, 100% 0, 100% calc(100% - var(--brand-cut)), calc(100% - var(--brand-cut)) 100%, 0 100%);
+  }
+  /* Edge layer — ink-line; ::after sits 1px inside it to reveal the edge as a hairline */
+  .form-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(10,11,13,0.22);
+    -webkit-clip-path: var(--brand-clip);
+            clip-path: var(--brand-clip);
+    filter: drop-shadow(0 18px 36px rgba(10,11,13,0.07));
+    z-index: -2;
+  }
+  /* Fill layer */
+  .form-card::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    background: var(--cream-paper);
+    -webkit-clip-path: var(--brand-clip);
+            clip-path: var(--brand-clip);
+    z-index: -1;
+  }
+  /* Tri-color tag motif riding the diagonal cut — three brand dots
+     (blue · lime · peach) that read as "this is shaped on purpose". */
+  .form-card-cut-mark {
+    position: absolute;
+    bottom: 14px;
+    right: calc(var(--brand-cut) + 12px);
+    display: inline-flex; gap: 6px;
+    pointer-events: none;
+  }
+  .form-card-cut-mark::before,
+  .form-card-cut-mark::after,
+  .form-card-cut-mark > i {
+    content: ""; display: block;
+    width: 8px; height: 8px; border-radius: 999px;
+  }
+  .form-card-cut-mark::before { background: var(--blue-deep); }
+  .form-card-cut-mark > i     { background: var(--lime); border: 1px solid rgba(10,11,13,0.15); }
+  .form-card-cut-mark::after  { background: var(--peach); }
+  .form-card.flash .form-card-title { animation: form-title-flash 1.4s ease-out; }
+  @keyframes form-title-flash {
+    0%   { color: var(--blue-deep); text-shadow: 0 0 0 rgba(91,137,255,0.4); }
+    100% { color: var(--ink);       text-shadow: 0 0 0 rgba(91,137,255,0); }
+  }
+  .form-card-eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--ink);
+    opacity: 0.55;
+    margin-bottom: 10px;
+  }
+  .form-card-eyebrow::before {
+    content: "";
+    width: 24px; height: 1px; background: var(--ink);
+    opacity: 0.5;
+  }
+  .form-card-title {
     font-family: var(--font-display);
-    font-size: clamp(80px, 14vw, 220px);
-    font-weight: 700;
-    line-height: 0.85;
-    letter-spacing: -0.05em;
-    margin-bottom: 50px;
-    overflow: hidden;
-    display: flex; align-items: baseline;
+    font-size: clamp(26px, 2.6vw, 36px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0 0 8px;
+    font-weight: 600;
   }
-  .footer-mark .stack {
-    position: relative; padding: 0 28px 0 28px;
-    color: var(--ink); display: inline-block;
-    margin-right: 6px;
+  .form-card-lede {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+    opacity: 0.65;
+    margin: 0 0 18px;
+    max-width: 380px;
   }
-  .footer-mark .stack::before, .footer-mark .stack::after, .footer-mark .stack span.bg {
-    content: '';
-    position: absolute; inset: 0;
-    clip-path: var(--tag-clip);
-  }
-  .footer-mark .stack::before { background: var(--peach); transform: translate(20px, -10px); z-index: -3; }
-  .footer-mark .stack span.bg     { background: var(--lime);  transform: translate(10px, -5px); z-index: -2; }
-  .footer-mark .stack::after  { background: var(--blue);  z-index: -1; }
-  .footer-mark sup { font-size: 0.18em; vertical-align: super; opacity: .8; }
 
+  /* Compact form so it fits a typical viewport without inner scrolling */
+  .footer-form { display: flex; flex-direction: column; gap: 12px; max-width: 460px; }
+  .ff-row-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .ff-row { display: flex; flex-direction: column; gap: 4px; }
+  .ff-row label {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.20em;
+    text-transform: uppercase; color: var(--ink);
+    opacity: 0.55;
+  }
+  .ff-row input,
+  .ff-row textarea {
+    background: var(--cream-paper);
+    border: 1px solid var(--ink-line);
+    border-radius: 0;
+    padding: 10px 14px;
+    color: var(--ink);
+    font: inherit; font-size: 14px;
+    transition: border-color .25s, background .25s, box-shadow .25s;
+    resize: vertical;
+    width: 100%;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.55) inset, 0 4px 14px rgba(10,11,13,0.03);
+  }
+  .ff-row textarea {
+    min-height: 76px;
+    line-height: 1.5;
+  }
+  .ff-row input:hover,
+  .ff-row textarea:hover {
+    border-color: rgba(10,11,13,0.40);
+    background: #FFFFFF;
+  }
+  .ff-row input:focus,
+  .ff-row textarea:focus {
+    outline: 0;
+    border-color: var(--ink);
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(91,137,255,0.18), 0 4px 14px rgba(10,11,13,0.05);
+  }
+  .ff-row input::placeholder,
+  .ff-row textarea::placeholder { color: var(--ink-soft); }
+
+  /* ---- Dropdown styled as a proper button on cream ---- */
+  .ff-select-wrap { position: relative; margin-top: 4px; }
+  .ff-row .ff-select-wrap select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    background: var(--cream-paper);
+    border: 1px solid var(--ink-line);
+    border-bottom: 1px solid var(--ink-line);
+    border-radius: 0;
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+    padding: 12px 48px 12px 16px;
+    color: var(--ink);
+    font: inherit; font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .25s, border-color .25s, box-shadow .25s, transform .25s;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 6px 18px rgba(10,11,13,0.04);
+  }
+  .ff-row .ff-select-wrap select:hover {
+    background: #FFFFFF;
+    border-color: rgba(10,11,13,0.35);
+    transform: translateY(-1px);
+  }
+  .ff-row .ff-select-wrap select:focus {
+    outline: 0;
+    background: #FFFFFF;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px rgba(91,137,255,0.25), 0 6px 18px rgba(10,11,13,0.06);
+  }
+  .ff-select-wrap select option { background: var(--cream-paper); color: var(--ink); }
+  .ff-select-wrap select:invalid { color: var(--ink-soft); }
+  /* Chevron pill — peach circle, ink glyph */
+  .ff-select-arrow {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    width: 30px; height: 30px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--peach);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px; font-weight: 700;
+    border-radius: 999px;
+    pointer-events: none;
+    transition: background .25s, transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .ff-row .ff-select-wrap:hover .ff-select-arrow { background: #E8A56F; }
+  .ff-row .ff-select-wrap select:focus + .ff-select-arrow { transform: translateY(-50%) rotate(180deg); }
+
+  /* ---- Submit ---- */
+  .form-submit {
+    align-self: flex-start;
+    margin-top: 6px;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+    background: #0A0B0D;
+    color: #FAFAF7 !important;
+    border: 0;
+    padding: 13px 26px;
+    font-family: var(--font-mono);
+    font-size: 12px; letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .25s, transform .25s, color .25s;
+  }
+  .form-submit::before { display: none; }
+  .form-submit:hover {
+    background: var(--blue-deep);
+    color: #FFFFFF !important;
+    transform: translateY(-2px);
+  }
+  .form-submit:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(91,137,255,0.35);
+  }
+
+  .footer-form.sent {
+    position: relative;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .footer-form.sent::after {
+    content: "Mensagem enviada — obrigado.";
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(236,230,214,0.96);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  /* Bottom bar */
   .footer-bottom {
     display: flex; justify-content: space-between; align-items: center;
     border-top: 1px solid var(--line);
-    padding-top: 28px;
+    padding-top: 24px;
     color: var(--paper-mute);
     font-family: var(--font-mono);
     font-size: 11px; letter-spacing: 0.12em;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-copy {
+    display: inline-flex; align-items: center; gap: 14px;
+  }
+  .footer-brand-mark {
+    height: 22px; width: auto; opacity: 0.7;
+  }
+  .footer-bottom-right {
+    display: flex; align-items: center; gap: 24px;
+    flex-wrap: wrap;
   }
   .footer-bottom a { color: var(--paper-mute); transition: color .25s; }
   .footer-bottom a:hover { color: var(--paper); }
   .footer-bottom .links { display: flex; gap: 24px; }
+  .footer-bottom sup { font-size: 7px; vertical-align: super; }
+
+  @media (max-width: 1024px) {
+    /* Stack the two halves; on mobile the form comes FIRST,
+       so the cream slab sits at the top as a full-bleed band. */
+    .footer-grid { grid-template-columns: 1fr; gap: 0; }
+    .footer-form-col { order: 1; padding: 0 0 56px; }
+    .footer-info-col { order: 2; grid-template-columns: 1fr 1fr; padding-right: 0; padding-top: 56px; padding-bottom: 0; }
+    .footer-form-col::before {
+      top: -100px;     /* bleed up through the footer's padding-top */
+      bottom: 0;       /* end at form-col bottom, before info-col begins */
+      left: calc(50% - 50vw);    /* bleed left to the viewport edge */
+      right: calc(50% - 50vw);   /* and right to the viewport edge */
+    }
+    .form-card { padding: 24px 22px 36px; --brand-cut: 32px; }
+    .footer-form { gap: 10px; }
+    .ff-row-pair { gap: 10px; }
+    .form-card-title { font-size: 24px; }
+    .form-card-lede { margin-bottom: 14px; }
+  }
+  @media (max-width: 480px) {
+    .ff-row-pair { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .footer-info-col { grid-template-columns: 1fr; row-gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 18px; align-items: flex-start; }
+    .footer-bottom-right { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .form-card-title { font-size: 28px; }
+  }
 
   /* ---------- Section index (dev aid) ---------- */
   .section-index {
@@ -972,24 +1333,53 @@
   .section { position: relative; isolation: isolate; }
   /* Hero stays paper */
   /* S2 MMC — stays --ink-2 (declared above) */
-  /* S3 Modelo — paper, with subtle accent line */
-  #modelo { background: var(--bg); }
+  /* S3 Modelo — full-bleed aerial backdrop with cream gradient overlay
+     for breathing room behind the dense Cadeia de Valor copy.
+     The aerial is `background-attachment: fixed` so opening an accordion
+     (which resizes the section) doesn't re-cover/rescale the image and
+     cause the visible stretch flicker. */
+  #modelo {
+    background:
+      linear-gradient(180deg,
+        rgba(250,250,247,0.96) 0%,
+        rgba(250,250,247,0.78) 32%,
+        rgba(250,250,247,0.78) 68%,
+        rgba(250,250,247,0.96) 100%) center / cover no-repeat scroll,
+      url('_assets/img/aerial_development.jpg') center center / cover no-repeat fixed,
+      var(--bg);
+  }
   #modelo::before {
     content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px;
     background: linear-gradient(90deg, transparent, var(--line) 22%, var(--line) 78%, transparent);
+    z-index: 1;
+  }
+  #modelo > .wrap { position: relative; z-index: 1; }
+  @media (max-width: 768px) {
+    /* On mobile the section is taller and text columns are narrower —
+       push the overlay denser so the aerial doesn't fight the copy. */
+    #modelo {
+      background:
+        linear-gradient(180deg,
+          rgba(250,250,247,0.97) 0%,
+          rgba(250,250,247,0.88) 35%,
+          rgba(250,250,247,0.88) 65%,
+          rgba(250,250,247,0.97) 100%) center / cover no-repeat,
+        url('_assets/img/aerial_development.jpg') center / cover no-repeat,
+        var(--bg);
+    }
   }
   /* S4 Process — already --ink-2 */
   /* S5 Sustentabilidade — paper */
   #sustentabilidade { background: var(--bg); }
   /* S6 Comunidade — already --ink-2 */
-  /* S7 Projetos — light cream surface (no dark sections per design system) */
-  #projetos { background: var(--ink-3); }
   /* Soft top shadow on alternating sections — adds contrast/depth */
-  .mmc::before, .process::before, .community::before, #projetos::before {
+  .mmc::before, .process::before, .community::before {
     content: ''; position: absolute; left: 0; right: 0; top: 0; height: 80px;
     background: linear-gradient(to bottom, rgba(10,11,13,.05), transparent);
     pointer-events: none; z-index: 0;
   }
+  /* Tecnologia: let the cream→white dissolve own the seam, drop the dark top-shadow */
+  #tecnologia::before { display: none; }
   /* Tri-colour accent strip at the top of each section — fluid rhythm cue */
   .section::after {
     content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
@@ -1002,7 +1392,6 @@
   .process::after      { background: var(--lime); }
   #sustentabilidade::after { background: var(--peach); }
   .community::after    { background: var(--peach); }
-  #projetos::after     { background: var(--peach); width: 120px; height: 4px; }
   .hero::after         { display: none; }
   .section .wrap { position: relative; z-index: 1; }
 
@@ -1208,31 +1597,43 @@
     display: grid; grid-template-columns: auto 1fr auto; gap: 28px;
     align-items: center;
     cursor: pointer;
-    transition: padding-left .35s, background .25s;
+    /* Snap the background swap so auto-cycling between pillars never shows
+       two highlights blending during the cross-fade. Only padding animates. */
+    transition: padding-left .35s;
   }
   .model-pillar > summary::-webkit-details-marker { display: none; }
   .model-pillar > summary::marker { display: none; content: ''; }
   .model-pillar:hover > summary { padding-left: 16px; background: var(--ink-2); }
   .model-pillar[open] > summary {
     padding-left: 16px;
-    background: var(--ink-2);
-    border-bottom: 1px solid var(--line-soft);
+    /* INHabitus "orange" (INOrigens peach) for the active pillar — gives the
+       open state a clearly distinct accent vs. the cream hover. */
+    background: var(--peach);
+    border-bottom: 1px solid rgba(10,11,13,0.14);
   }
+  .model-pillar[open] > summary h4 { color: var(--ink); }
+  .model-pillar[open] > summary p { color: rgba(10,11,13,0.72); }
+  .model-pillar[open] > summary .num { color: rgba(10,11,13,0.65); }
   .model-pillar > summary .head { min-width: 0; }
+  .model-pillar > summary h4 { font-weight: 600; }
   .model-pillar > summary .arrow {
     width: 32px; height: 32px; border: 1px solid var(--line);
     display: grid; place-items: center;
     color: var(--paper-mute);
     transition: transform .35s cubic-bezier(.2,.7,.2,1), background .25s, color .25s, border-color .25s;
   }
-  .model-pillar:hover > summary .arrow,
-  .model-pillar[open] > summary .arrow { background: var(--blue); color: var(--ink); border-color: var(--blue); }
-  .model-pillar[open] > summary .arrow { transform: rotate(90deg); }
+  .model-pillar:hover > summary .arrow { background: var(--blue); color: var(--ink); border-color: var(--blue); }
+  .model-pillar[open] > summary .arrow {
+    background: var(--ink); color: var(--peach); border-color: var(--ink);
+    transform: rotate(90deg);
+  }
 
   .model-pillar-detail {
     padding: 28px 16px 32px 78px;
-    background: var(--ink-2);
-    border-bottom: 1px solid var(--line-soft);
+    /* Soft peach tint carries the active accent into the detail panel
+       without overpowering the body copy. */
+    background: rgba(244,185,136,0.22);
+    border-bottom: 1px solid rgba(10,11,13,0.10);
     animation: detailIn .55s cubic-bezier(.2,.7,.2,1);
   }
   @keyframes detailIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
@@ -1259,9 +1660,44 @@
   }
 
   /* ===========================================================
-     S7 — PROJECTS MAP (Portugal silhouette + side panel + tabs)
-     Light cream canvas, blue/peach hotspots; cream side panel.
+     S7 — PROJETOS · interactive Portugal map + side panel
      =========================================================== */
+  #projetos { background: var(--ink-3); position: relative; }
+  .projects-header {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 64px;
+    align-items: end; margin-bottom: 60px;
+  }
+
+  /* ===== Projetos H2 — word + ellipsis cascade reveal ===== */
+  .projects-title .pt-word,
+  .projects-title .pt-dots span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity .6s cubic-bezier(.2,.7,.2,1),
+                transform .6s cubic-bezier(.2,.7,.2,1);
+  }
+  .projects-header.in .projects-title .pt-word,
+  .projects-header.in .projects-title .pt-dots span { opacity: 1; transform: none; }
+  /* Stagger */
+  .projects-header.in .projects-title .pt-w1   { transition-delay: .10s; }
+  .projects-header.in .projects-title .pt-w2   { transition-delay: .35s; }
+  .projects-header.in .projects-title .pt-dots span:nth-child(1) { transition-delay: .65s; }
+  .projects-header.in .projects-title .pt-dots span:nth-child(2) { transition-delay: .82s; }
+  .projects-header.in .projects-title .pt-dots span:nth-child(3) { transition-delay: .99s; }
+  /* Subtle continuous breathing on the dots after they appear — anticipation cue */
+  @keyframes pt-dot-breathe {
+    0%, 100% { opacity: .55; }
+    50%      { opacity: 1; }
+  }
+  .projects-header.in .projects-title .pt-dots span {
+    animation: pt-dot-breathe 2.6s ease-in-out infinite;
+  }
+  .projects-header.in .projects-title .pt-dots span:nth-child(1) { animation-delay: 1.3s; }
+  .projects-header.in .projects-title .pt-dots span:nth-child(2) { animation-delay: 1.5s; }
+  .projects-header.in .projects-title .pt-dots span:nth-child(3) { animation-delay: 1.7s; }
+
   .map-stage {
     display: grid; grid-template-columns: 5fr 7fr;
     gap: 32px;
@@ -1284,221 +1720,188 @@
     z-index: 3;
   }
   .pt-map {
-    width: 100%; height: auto; max-height: 560px;
-    display: block; margin: 0 auto;
+    width: 100%; height: auto; max-height: 560px; display: block; margin: 0 auto;
   }
-  .pt-shape {
-    fill: var(--ink-2);
-    stroke: var(--paper-mute);
-    stroke-width: 1.2;
-    transition: fill .4s;
+  /* District paths — real Portugal mainland + Açores + Madeira */
+  .pt-districts path {
+    fill: var(--ink-3);
+    stroke: var(--bg);
+    stroke-width: 0.6;
+    stroke-linejoin: round;
+    transition: fill .25s ease;
   }
-  .pt-river {
-    fill: none;
-    stroke: var(--blue-deep);
-    stroke-width: 1.4;
-    stroke-dasharray: 3 4;
-    opacity: .35;
+  /* Districts containing at least one project — always tinted (visual only) */
+  .pt-districts path[data-has-project] {
+    fill: var(--blue);
   }
-  /* Subtle parallel/meridian grid */
-  .pt-map .grid line {
-    stroke: rgba(10,11,13,.05);
-    stroke-dasharray: 2 5;
-  }
-  /* Cardinal markers (N S E W) */
-  .pt-map .cardinal text {
-    fill: var(--paper-mute);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.22em;
-    opacity: .5;
-  }
-  /* Açores / Madeira marks */
-  .pt-islands circle {
-    fill: var(--paper-mute);
-    opacity: .35;
-  }
+
+  /* Hotspot dots — sit ON TOP of the highlighted district. Invisible .hit
+     circle (r=12) expands the tap target so clustered dots (Porto/Braga) are
+     reachable without precision pointing. */
   .hotspots .hotspot { cursor: pointer; }
-  .hotspot .ring-outer {
-    fill: var(--blue-deep);
-    opacity: .05;
-    transform-origin: center;
+  .hotspot .hit {
+    fill: transparent;
+    pointer-events: all;
   }
   .hotspot .ring {
-    fill: var(--blue-deep);
-    opacity: .14;
-    transform-origin: center;
+    fill: var(--ink);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s;
   }
   .hotspot .dot {
-    fill: var(--blue-deep);
-    stroke: var(--bg);
-    stroke-width: 2.5;
-    transition: r .3s, fill .3s;
-  }
-  .hotspot:hover .dot,
-  .hotspot.active .dot {
-    r: 9;
     fill: var(--ink);
-  }
-  .hotspot.active .ring {
-    animation: pulsering 1.8s ease-out infinite;
-    opacity: .35;
-  }
-  .hotspot.active .ring-outer {
-    animation: pulsering 2.6s ease-out infinite .35s;
-    opacity: .18;
-  }
-  @keyframes pulsering {
-    0%   { transform: scale(.55); opacity: .55; }
-    100% { transform: scale(1.7); opacity: 0; }
-  }
-  .hotspot[data-project="carreco"] .ring,
-  .hotspot[data-project="carreco"].active .ring { fill: var(--peach); opacity: .35; }
-  .hotspot[data-project="carreco"] .ring-outer { fill: var(--peach); opacity: .12; }
-  .hotspot[data-project="carreco"] .dot,
-  .hotspot[data-project="carreco"].active .dot { fill: var(--ink); }
-
-  /* Floating map labels */
-  .map-labels {
-    position: absolute; inset: 36px 24px 0 24px;
+    stroke: var(--bg);
+    stroke-width: 1.2;
     pointer-events: none;
+    transition: r .25s, fill .25s;
   }
+  .hotspot:hover .ring,
+  .hotspot.active .ring { opacity: .18; }
+  .hotspot:hover .dot,
+  .hotspot.active .dot { r: 4.5; fill: var(--peach); }
+
+  .map-labels { position: absolute; inset: 36px 24px 0 24px; pointer-events: none; }
   .map-label {
-    position: absolute;
-    pointer-events: auto;
-    background: var(--bg);
-    border: 1px solid var(--line);
+    position: absolute; pointer-events: none;
+    background: var(--ink); border: 1px solid var(--ink);
     padding: 7px 12px 8px;
-    cursor: pointer;
-    transform: translateX(8px);
-    transition: transform .35s, border-color .35s, background .35s;
-    font-family: var(--font-mono);
-    line-height: 1.25;
-    white-space: nowrap;
-    z-index: 4;
-  }
-  .map-label::before {
-    content: ''; position: absolute; left: -12px; top: 50%; width: 12px; height: 1px;
-    background: var(--line);
-  }
-  .map-label .label-coord {
-    display: block;
-    font-size: 9px;
-    letter-spacing: 0.16em;
-    color: var(--paper-mute);
-    margin-bottom: 2px;
-  }
-  .map-label .label-name {
-    display: block;
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    color: var(--ink);
-    font-weight: 500;
-  }
-  .map-label .label-status {
-    display: block;
-    font-size: 9px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--paper-mute);
-    margin-top: 2px;
-  }
-  .map-label:hover {
-    border-color: var(--ink);
-    transform: translateX(0);
+    font-family: var(--font-mono); line-height: 1.25;
+    white-space: nowrap; z-index: 4;
+    /* Hidden by default — revealed only when the matching district is active */
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-6px, -4px);
+    transition: opacity .25s ease, transform .35s cubic-bezier(.2,.7,.2,1), visibility 0s linear .25s;
   }
   .map-label.active {
-    border-color: var(--ink);
-    background: var(--ink);
-    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity .25s ease, transform .35s cubic-bezier(.2,.7,.2,1), visibility 0s linear 0s;
   }
-  .map-label.active .label-coord { color: rgba(250,250,247,.55); }
-  .map-label.active .label-name { color: var(--bg); }
-  .map-label.active .label-status { color: var(--peach); }
-  .map-label.active::before { background: var(--ink); }
+  .map-label .label-coord  { display: block; font-size: 9px;  letter-spacing: 0.16em; color: rgba(250,250,247,.55); margin-bottom: 2px; }
+  .map-label .label-name   { display: block; font-size: 11px; letter-spacing: 0.06em; color: var(--bg); font-weight: 500; }
+  .map-label .label-status { display: block; font-size: 9px;  letter-spacing: 0.16em; text-transform: uppercase; color: var(--peach); margin-top: 2px; }
 
-  /* Side panel — cream, complementary to canvas */
+  /* Side panel — cream. Uses grid-stack: all .map-project share the same cell,
+     so the tallest one dictates the panel height. No clipped content, no height
+     jumps when switching projects. */
   .map-panel {
     position: relative;
     background: var(--bg);
     border: 1px solid var(--line);
     padding: 0;
-    overflow: hidden;
-    min-height: 600px;
+    display: grid;
+    grid-template-areas: "stack";
+    min-height: 0;
   }
   .map-project {
-    position: absolute; inset: 0;
+    grid-area: stack;
     padding: 0;
     display: flex; flex-direction: column;
-    opacity: 0; pointer-events: none;
+    opacity: 0; pointer-events: none; visibility: hidden;
     transform: translateY(12px);
-    transition: opacity .55s, transform .55s cubic-bezier(.2,.7,.2,1);
+    transition: opacity .45s, transform .45s cubic-bezier(.2,.7,.2,1),
+                visibility 0s linear .45s;
   }
-  .map-project.active { opacity: 1; pointer-events: auto; transform: none; }
-  .map-project-img {
-    position: relative;
-    aspect-ratio: 16/9;
-    overflow: hidden;
-    background: var(--ink-3);
+  .map-project.active {
+    opacity: 1; pointer-events: auto; visibility: visible;
+    transform: none;
+    transition: opacity .45s, transform .45s cubic-bezier(.2,.7,.2,1),
+                visibility 0s linear 0s;
   }
-  .map-project-img img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform 1.4s ease;
-  }
+  /* Prevent the image from collapsing in the flex column */
+  .map-project-img { flex-shrink: 0; }
+  .map-project-img { position: relative; aspect-ratio: 16/9; overflow: hidden; background: var(--ink-3); }
+  .map-project-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s ease; }
   .map-project:hover .map-project-img img { transform: scale(1.04); }
+  /* Placeholder cards (Em breve / Em estudo) — use the shared inh_coming_soon
+     photo as backdrop with a light-gray brand cut-corner tag overlaid as a
+     subtle identity mark. Heavy cream-tinted veil keeps the photo as a soft,
+     smooth context (not a focal image) and gives the brand shape room to read. */
   .map-project-img.placeholder {
-    display: grid; place-items: center;
-    background: linear-gradient(135deg, var(--ink-2) 0%, var(--ink-3) 50%, var(--ink-4) 100%);
+    background:
+      linear-gradient(135deg, rgba(250,250,247,0.78) 0%, rgba(250,250,247,0.62) 60%, rgba(250,250,247,0.82) 100%),
+      url('_assets/img/inh_coming_soon.png') center / cover no-repeat,
+      var(--ink-3);
   }
-  .placeholder-mark {
-    font-family: var(--font-display);
-    font-size: 96px; font-weight: 600;
-    color: var(--paper-mute);
-    opacity: .35;
-    letter-spacing: -0.04em;
+  .map-project-img.placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* Cut-corner brand tag shape (matches inHabitus logo). Light gray on top
+       of the photo, sized as a centered mark — not full-bleed. */
+    width: 38%;
+    height: 64%;
+    top: 18%;
+    left: 31%;
+    background: rgba(245,245,242,0.78);
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 78% 100%, 0 100%);
+    pointer-events: none;
+    z-index: 1;
   }
-  .map-project-img .project-tag-overlay,
-  .map-project > .project-tag-overlay {
-    position: absolute; top: 18px; left: 18px;
-    z-index: 2;
+  /* Hide the legacy letter mark — the photo + brand shape replaces it. */
+  .placeholder-mark { display: none; }
+  /* Alfena photo has a white sky/tree column baked into the LEFT THIRD of
+     the source JPG. The image's aspect ratio is already ~16/9 so object-fit
+     cover fills horizontally with no slack — object-position can't crop it.
+     Instead, scale the image up and anchor to the right so the building
+     expands into frame and the white edge falls outside .overflow:hidden. */
+  .map-project[data-project="alfena"] .map-project-img img {
+    transform: scale(1.22);
+    transform-origin: 80% center;
   }
+  .map-project[data-project="alfena"]:hover .map-project-img img {
+    transform: scale(1.26);
+    transform-origin: 80% center;
+  }
+  .project-tag-overlay {
+    position: absolute; top: 18px; left: 18px; z-index: 2;
+    background: var(--peach); color: var(--ink);
+    padding: 7px 14px;
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 90% 100%, 0 100%);
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    /* Soft drop so the tag separates from any photo backdrop. */
+    filter: drop-shadow(0 2px 6px rgba(10,11,13,0.18));
+  }
+  /* "Em breve" / "Em estudo" tags sit on the placeholder photo — bump them
+     to the peach brand accent with extra weight, size and a stronger shadow
+     so they pop against the cream-veiled aerial. */
   .project-tag-overlay.ghost {
-    background: transparent;
-    border: 1px dashed var(--paper-mute);
-    color: var(--paper-mute);
+    background: var(--peach);
+    border: 0;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    padding: 9px 18px;
+    filter: drop-shadow(0 4px 10px rgba(10,11,13,0.28));
   }
-  .map-project h3 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 28px;
-    line-height: 1.05;
-    margin: 26px 28px 10px;
-    letter-spacing: -0.02em;
+  .map-project h3 { font-family: var(--font-display); font-weight: 500; font-size: 28px; line-height: 1.05; margin: 26px 28px 10px; letter-spacing: -0.02em; }
+  .map-project > p  { margin: 0 28px 16px; color: var(--paper-mute); font-size: 14px; line-height: 1.6; max-width: 56ch; }
+  .project-meta {
+    display: grid; grid-template-columns: auto 1fr; gap: 8px 20px;
+    font-size: 13px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    padding: 18px 0; margin: 8px 28px 16px;
   }
-  .map-project > p {
-    margin: 0 28px 16px;
-    color: var(--paper-mute);
-    font-size: 14px; line-height: 1.6;
-    max-width: 56ch;
-  }
-  .map-project .project-meta {
-    margin: 8px 28px 16px;
-  }
+  .project-meta dt { color: var(--paper-mute); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 0; }
+  .project-meta dd { margin: 0; padding: 4px 0; color: var(--paper); }
   .map-project-note {
     margin: 0 28px 18px !important;
     font-family: var(--font-mono);
-    font-size: 11px; letter-spacing: 0.06em;
-    color: var(--paper-mute);
-    border-left: 2px solid var(--line);
-    padding-left: 12px;
+    font-size: 11px; letter-spacing: 0.06em; color: var(--paper-mute);
+    border-left: 2px solid var(--line); padding-left: 12px;
   }
   .map-project .btn { margin: 0 28px 28px; align-self: flex-start; }
 
-  /* Mini typology strip inside Carreço panel */
+  /* Mini typology strip — Carreço panel */
   .typology-strip {
     display: grid; grid-template-columns: repeat(3, 1fr);
     gap: 0;
-    margin: 8px 0 18px;
+    margin: 8px 28px 18px;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
   }
@@ -1509,31 +1912,21 @@
   }
   .typology-mini:last-child { border-right: 0; }
   .typology-mini .ttag {
-    align-self: flex-start;
-    background: var(--peach); color: var(--ink);
+    align-self: flex-start; background: var(--peach); color: var(--ink);
     padding: 4px 9px;
     clip-path: polygon(0 0, 100% 0, 100% 60%, 86% 100%, 0 100%);
     font-family: var(--font-mono);
     font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
   }
-  .typology-mini .area {
-    font-family: var(--font-display);
-    font-size: 22px; font-weight: 500;
-    line-height: 1; letter-spacing: -0.02em;
-    color: var(--ink);
-  }
-  .typology-mini .area sub {
-    font-size: 11px; opacity: .65; vertical-align: baseline; margin-left: 2px;
-  }
-  .typology-mini .units {
-    font-family: var(--font-mono);
-    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--paper-mute);
-  }
+  .typology-mini .area { font-family: var(--font-display); font-size: 22px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; color: var(--ink); }
+  .typology-mini .area sub { font-size: 11px; opacity: .65; vertical-align: baseline; margin-left: 2px; }
+  .typology-mini .units { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--paper-mute); }
 
-  /* Project tab bar — Sensara-style switcher, on light section */
+  /* Bottom tab bar — Sensara-style switcher */
+  /* 8 tabs in a single horizontal row — clean linear nav, peach top accent
+     on active. No padding-shift on hover/active (less jumpy). */
   .project-tabs {
-    display: grid; grid-template-columns: repeat(4, 1fr);
+    display: grid; grid-template-columns: repeat(8, 1fr);
     gap: 0;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
@@ -1541,81 +1934,695 @@
     background: var(--bg);
   }
   .project-tab {
-    padding: 22px 22px 24px;
+    padding: 18px 14px 20px;
     border-right: 1px solid var(--line);
     text-align: left;
-    display: flex; flex-direction: column; gap: 6px;
+    display: flex; flex-direction: column; gap: 4px;
     cursor: pointer; position: relative;
-    transition: background .35s, padding-top .35s;
+    transition: background .25s, color .25s;
     background: transparent;
+    min-width: 0;
   }
   .project-tab:last-child { border-right: 0; }
+  /* Top peach accent — full-width on active, no jumpy padding shift */
   .project-tab::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
     background: var(--peach);
     transform: scaleX(0); transform-origin: left;
-    transition: transform .55s cubic-bezier(.2,.7,.2,1);
+    transition: transform .45s cubic-bezier(.2,.7,.2,1);
   }
-  .project-tab:hover { background: var(--ink-2); padding-top: 26px; }
-  .project-tab.active { background: var(--ink-2); padding-top: 26px; }
+  .project-tab:hover { background: var(--ink-2); }
+  .project-tab.active { background: var(--ink-2); }
   .project-tab.active::before, .project-tab:hover::before { transform: scaleX(1); }
   .project-tab .tab-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--paper-mute);
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--paper-mute);
+    display: inline-flex; align-items: center; gap: 6px;
   }
-  .project-tab .tab-name {
-    font-family: var(--font-display);
-    font-size: 18px; font-weight: 500; line-height: 1.1;
-    letter-spacing: -0.01em;
-    color: var(--ink);
+  .project-tab .tab-eyebrow::before {
+    content: ''; display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--paper-mute);
+    flex-shrink: 0;
   }
-  .project-tab .tab-meta {
-    font-family: var(--font-mono);
-    font-size: 11px; letter-spacing: 0.06em;
-    color: var(--paper-mute);
-  }
+  .project-tab .tab-name { font-family: var(--font-display); font-size: 15px; font-weight: 500; line-height: 1.15; letter-spacing: -0.01em; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .project-tab .tab-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; color: var(--paper-mute); }
 
-  /* Hide legacy ghost markup wrapper — defensive */
-  .legacy-hidden { display: none !important; }
+  /* ===== Brand-consistent status palette =====
+     Esgotado   → terracotta (complements peach)
+     Construção → desaturated lime (legible at small size, source --lime)
+     Estudo     → saffron (between lime and peach)
+     Breve      → brand blue-deep
+  */
+  [data-status="esgotado"]   { --status-color: #C36868; --status-bg: #C36868;   --status-fg: var(--bg); }
+  [data-status="construcao"] { --status-color: #7DAA2E; --status-bg: #DEF5A8;   --status-fg: var(--ink); }
+  [data-status="estudo"]     { --status-color: #3B6ADB; --status-bg: var(--blue); --status-fg: var(--ink); }
+  [data-status="breve"]      { --status-color: #C49323; --status-bg: #F2D27A;   --status-fg: var(--ink); }
+
+  /* All 4 status tabs — coloured dial + coloured eyebrow, single synced pulse */
+  .project-tab[data-status] .tab-eyebrow { color: var(--status-color); }
+  .project-tab[data-status] .tab-eyebrow::before {
+    background: var(--status-color);
+    animation: tab-dial-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes tab-dial-pulse {
+    0%, 100% { opacity: .45; transform: scale(.85); }
+    50%      { opacity: 1;   transform: scale(1.05); }
+  }
+  /* Top accent stripe (hover/active) keeps status colour */
+  .project-tab[data-status]::before { background: var(--status-color); }
+
+  /* Map label status text */
+  .map-label[data-status] .label-status { color: var(--status-color); }
+
+  /* Side-panel overlay pill on top of project image */
+  .map-project[data-status] .project-tag-overlay {
+    background: var(--status-bg);
+    color: var(--status-fg);
+    border: none;
+  }
+  .map-project[data-status] .project-tag-overlay.ghost {
+    background: transparent;
+    border: 1px dashed var(--status-color);
+    color: var(--status-color);
+  }
 
   /* ---------- Selection ---------- */
   ::selection { background: var(--blue); color: var(--ink); }
 
   /* ---------- Responsive (basic) ---------- */
   @media (max-width: 1024px) {
-    .hero-grid, .grid-2, .mmc-header, .process-headline, .sustain-grid, .sustain-header, .community-grid, .projects-header, .footer-cta, .map-stage {
+    .hero-grid, .grid-2, .mmc-header, .process-headline, .sustain-grid, .sustain-header, .community-grid, .footer-cta, .projects-header, .map-stage {
       grid-template-columns: 1fr;
     }
-    .grid-3, .grid-4, .grid-5, .mmc-cards, .stages, .project-typologies, .project-pipeline, .footer-cols, .project-tabs { grid-template-columns: 1fr 1fr; }
-    .mmc-card, .stage, .project-tab { border-right: 0 !important; border-bottom: 1px solid var(--line); }
+    .grid-3, .grid-4, .grid-5, .mmc-cards, .stages, .footer-cols { grid-template-columns: 1fr 1fr; }
+    .project-tabs { grid-template-columns: repeat(4, 1fr); }
+    .mmc-card, .stage { border-right: 0 !important; border-bottom: 1px solid var(--line); }
+    /* 8 tabs in 4×2 on tablet: bottom row has no bottom-border */
+    .project-tab:nth-child(n+5) { border-bottom: 0; }
+    .project-tab:nth-child(4n) { border-right: 0; }
     .hero-stats { grid-template-columns: 1fr 1fr; }
     .stage-detail-grid { grid-template-columns: 1fr; gap: 28px; }
+    .sustain-grid .sustain-img { position: static; max-height: 460px; }
     .typology-strip { grid-template-columns: 1fr; }
     .typology-mini { border-right: 0; border-bottom: 1px solid var(--line-soft); }
-    .sustain-grid .sustain-img { position: static; max-height: 460px; }
+  }
+
+  /* ============================================================
+     MOBILE NAV (hamburger sheet) — desktop hides .nav-burger
+     ============================================================ */
+  .nav-burger { display: none; }
+  .mobile-menu { display: none; }
+  /* Mobile-only stage detail injected via JS — hidden on desktop */
+  .stage-mobile-detail { display: none; }
+
+  /* ============================================================
+     MOBILE BREAKPOINT — ≤900px
+     Complete mobile rebuild. Single-column everywhere.
+     ============================================================ */
+  @media (max-width: 900px) {
+
+    /* ---------- Layout primitives ---------- */
+    .wrap { padding: 0 20px; }
+    .section { padding: 72px 0; }
+    .section-title { font-size: clamp(34px, 9vw, 48px); margin: 14px 0 22px; }
+    .section-lede { font-size: 15px; line-height: 1.6; }
+    .section-eyebrow { font-size: 10px; }
+    body { overflow-x: hidden; }
+
+    /* ---------- Nav: hide desktop bits, show hamburger ---------- */
+    .nav-inner {
+      grid-template-columns: 1fr auto !important;
+      padding: 12px 20px;
+      gap: 12px;
+    }
+    .nav-links { display: none !important; }
+    .nav-actions { display: none !important; }
+    .nav-burger {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      width: 44px; height: 44px;
+      align-items: center;
+      cursor: pointer;
+      background: none; border: 0; padding: 0;
+    }
+    .nav-burger span {
+      display: block;
+      width: 20px; height: 1.6px;
+      background: var(--ink);
+      transition: transform .3s, opacity .25s;
+    }
+    .nav-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(5.6px) rotate(45deg); }
+    .nav-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .nav-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-5.6px) rotate(-45deg); }
+    .nav-logo .brand-mark { height: 24px; }
+    .nav-logo sup { font-size: 8px; }
+
+    .mobile-menu {
+      display: none;  /* hidden until .open is added by JS */
+      position: fixed;
+      top: 68px; left: 0; right: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      padding: 20px 20px 28px;
+      z-index: 999;
+      box-shadow: 0 12px 28px rgba(0,0,0,.06);
+    }
+    .mobile-menu.open {
+      display: block;
+      animation: menu-fade-down .35s cubic-bezier(.2,.7,.2,1) both;
+    }
+    @keyframes menu-fade-down {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .mobile-menu a {
+      display: block;
+      padding: 14px 0;
+      font-family: var(--font-display);
+      font-size: 18px;
+      border-bottom: 1px solid var(--line-soft);
+      color: var(--ink);
+    }
+    .mobile-menu a:last-child {
+      border: 0;
+      margin-top: 16px;
+      text-align: center;
+      padding: 14px 22px;
+    }
+
+    /* ny-badge now lives in the footer — sized via .ny-badge--footer */
+
+    /* ---------- Hero mobile — text overlay on image (one unified block) ---------- */
+    .hero {
+      padding: 0;
+      position: relative;
+    }
+    .hero-grid {
+      display: block;
+      position: relative;
+      min-height: 62vh;
+      min-height: 62svh;       /* keep tight — image right above big numbers */
+      margin: 0 -20px;          /* full-bleed, break out of .wrap padding */
+      padding: 88px 20px 28px;
+      overflow: hidden;
+      clip-path: var(--hero-clip);   /* brand cut-corner motif */
+      -webkit-clip-path: var(--hero-clip);
+    }
+    /* Image fills the entire .hero-grid as background layer */
+    .hero-media {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center bottom;
+      aspect-ratio: auto;
+      max-height: none;
+      transform: none !important;        /* disable desktop parallax */
+      animation: heroKenburns 18s ease-in-out infinite alternate;
+    }
+    @keyframes heroKenburns {
+      from { transform: scale(1)    translate3d(0, 0, 0); }
+      to   { transform: scale(1.08) translate3d(-1%, -2%, 0); }
+    }
+    /* Cream scrim from top → fades to transparent so image shows at bottom */
+    .hero-grid::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg,
+        var(--bg) 0%,
+        rgba(250,250,247,0.96) 28%,
+        rgba(250,250,247,0.72) 50%,
+        rgba(250,250,247,0.25) 78%,
+        rgba(250,250,247,0) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    /* Text content on top of scrim */
+    .hero-left {
+      position: relative;
+      z-index: 2;
+    }
+    .hero-title {
+      font-size: clamp(48px, 13vw, 72px) !important;
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+    .hero-title .word { display: inline-block; }
+    .hero-lede { font-size: 16px; line-height: 1.55; margin: 18px 0 24px; }
+    .hero-ctas { margin-bottom: 32px; }
+
+    .hero-stats {
+      grid-template-columns: 1fr 1fr;
+      margin-top: 0;            /* flush with hero-grid */
+      gap: 0;
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+    .hero-stat {
+      padding: 24px 18px;
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+    }
+    .hero-stat:nth-child(2) { border-right: 0; }
+    .hero-stat:nth-child(3), .hero-stat:nth-child(4) { border-bottom: 0; }
+    .hero-stat .num { font-size: 48px; }
+    .hero-stat .num sup { font-size: 18px; }
+    .hero-stat .label { font-size: 11px; }
+    .hero-stats-footnote { font-size: 10px; margin-top: 12px; }
+    .hero-stat .num-prefix { font-size: 48px; margin-right: 4px; }
+
+    /* ---------- Positioning ---------- */
+    .positioning { padding: 64px 0 0; }
+    .mmc { padding-top: 0 !important; }
+    .mmc .mmc-header { padding-top: 48px; }
+    .positioning-title {
+      font-size: clamp(32px, 8.5vw, 44px);
+      line-height: 1.08;
+    }
+    .positioning-title .pos-word { margin-right: 0.18em; }
+    .positioning-lede { font-size: 15px; }
+
+    /* ---------- MMC Tecnologia — mobile ACCORDION (closed by default) ---------- */
+    .mmc-header { grid-template-columns: 1fr; gap: 20px; margin-bottom: 36px; }
+    .mmc-cards { display: none; }
+    .mmc-details-stack { display: block; }
+    .mmc-detail {
+      grid-area: auto;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transition: none;
+      border-bottom: 1px solid var(--line);
+      background: var(--ink-3);
+    }
+    .mmc-detail-inner {
+      grid-template-columns: 1fr;
+      padding: 22px 20px;
+      gap: 18px;
+      display: block;
+    }
+    .mmc-detail h4 { font-size: 22px; margin: 0 0 6px; }
+    .mmc-detail .label { font-size: 10px; margin-bottom: 8px; }
+    .mmc-detail p { font-size: 14px; margin: 0; }
+    .mmc-detail .panel-img { aspect-ratio: 4/3; max-height: 280px; margin-top: 18px; }
+
+    /* Accordion header: first inner div is clickable; description, spec + image collapsed */
+    .mmc-detail-inner > div:first-child {
+      cursor: pointer;
+      position: relative;
+      padding-right: 40px;
+      user-select: none;
+    }
+    .mmc-detail-inner > div:first-child::after {
+      content: '+';
+      position: absolute; right: 4px; top: 50%;
+      transform: translateY(-50%);
+      font: 500 28px/1 var(--font-display);
+      color: var(--ink);
+      transition: transform .3s;
+    }
+    .mmc-detail.expanded .mmc-detail-inner > div:first-child::after {
+      content: '−';
+      transform: translateY(-50%) rotate(180deg);
+    }
+    /* Collapsed by default: hide description (p inside first div), spec dl, image */
+    .mmc-detail-inner > div:first-child p,
+    .mmc-detail-inner > div:nth-child(2),
+    .mmc-detail-inner > div:nth-child(3) {
+      display: none;
+    }
+    .mmc-detail.expanded .mmc-detail-inner > div:first-child p,
+    .mmc-detail.expanded .mmc-detail-inner > div:nth-child(2),
+    .mmc-detail.expanded .mmc-detail-inner > div:nth-child(3) {
+      display: block;
+      animation: mmc-fade-in .35s ease both;
+    }
+    .mmc-detail.expanded .mmc-detail-inner > div:first-child p {
+      margin-top: 14px;
+    }
+    @keyframes mmc-fade-in {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* dl tables → stacked rows (when expanded) */
+    .mmc-spec {
+      display: block;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      margin-top: 14px;
+    }
+    .mmc-spec dt {
+      padding: 10px 0 2px;
+    }
+    .mmc-spec dd {
+      padding: 0 0 12px;
+      border-top: 0;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 14px;
+    }
+    .mmc-spec dd:last-of-type { border-bottom: 0; }
+
+    /* ---------- Cadeia de Valor ---------- */
+    .grid-2 { display: block; }
+    .model-text { margin-bottom: 40px; }
+    .quote { font-size: 18px; line-height: 1.4; }
+    .model-pillar > summary { padding: 22px 16px; }
+    .model-pillar > summary .num { font-size: 22px; min-width: 36px; }
+    .model-pillar > summary h4 { font-size: 17px; }
+    .model-pillar > summary p { font-size: 13px; }
+    .model-pillar-detail { padding: 16px 16px 24px; }
+    .model-pillar-detail p { font-size: 14px; }
+    .model-pillar-detail li { font-size: 13px; }
+
+    /* ---------- Processo — mobile exclusive accordion ---------- */
+    .process-headline { grid-template-columns: 1fr; gap: 20px; }
+    .process-quote { font-size: 16px; }
+    .stages {
+      grid-template-columns: 1fr;
+      border-top: 1px solid var(--line);
+    }
+    .stage {
+      padding: 24px 20px;
+      border-right: 0 !important;
+      border-bottom: 0 !important;
+      text-align: left;
+      position: relative;
+      cursor: pointer;
+    }
+    .stage h4 { font-size: 22px; margin: 0 0 6px; }
+    .stage p { font-size: 14px; margin: 0; }
+    .stage-num { font-size: 11px; }
+    /* Stronger "Ver detalhe" CTA on mobile */
+    .stage .stage-cta {
+      display: inline-flex !important;
+      align-items: center; gap: 10px;
+      margin-top: 16px;
+      padding: 10px 16px;
+      background: var(--bg);
+      border: 1px solid var(--ink);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink) !important;
+      transition: background .25s, color .25s;
+    }
+    .stage.active .stage-cta {
+      background: var(--ink);
+      color: var(--bg) !important;
+    }
+
+    /* Inject mobile detail panel inline below each stage (filled by JS) */
+    .stage-mobile-detail {
+      display: none;
+      padding: 24px 20px 32px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      animation: mmc-fade-in .35s ease both;
+    }
+    .stage.active + .stage-mobile-detail {
+      display: block;
+    }
+    .stage-mobile-detail .stage-detail-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 6px 0 12px;
+    }
+    .stage-mobile-detail .stage-detail-lede {
+      font-size: 14px; line-height: 1.6;
+      color: var(--paper-mute);
+      margin: 0 0 18px;
+    }
+    .stage-mobile-detail .stage-detail-num {
+      font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: 0.18em;
+      color: var(--paper-mute);
+      text-transform: uppercase;
+    }
+    .stage-mobile-detail dl { display: block; margin: 0 0 18px; }
+    .stage-mobile-detail dt {
+      font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: 0.1em;
+      color: var(--paper-mute);
+      text-transform: uppercase;
+      padding: 12px 0 2px;
+    }
+    .stage-mobile-detail dd {
+      margin: 0; padding: 0 0 12px;
+      font-size: 14px; color: var(--paper);
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .stage-mobile-detail dd:last-of-type { border-bottom: 0; }
+    .stage-mobile-detail .stat-num {
+      font-family: var(--font-display);
+      font-size: 36px; font-weight: 500;
+      color: var(--ink);
+    }
+    .stage-mobile-detail .stat-num sub {
+      font-size: 14px; opacity: .65; vertical-align: baseline; margin-left: 2px;
+    }
+    .stage-mobile-detail .stat-label {
+      font-family: var(--font-mono);
+      font-size: 10px; letter-spacing: 0.14em;
+      color: var(--paper-mute);
+      text-transform: uppercase;
+      margin-left: 12px;
+    }
+
+    /* Hide the desktop single shared detail panel on mobile */
+    .process .stage-detail { display: none; }
+
+    .stage-detail-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .stage-detail { padding: 28px 20px; }
+    .stage-detail-title { font-size: 28px; }
+    .stage-detail-lede { font-size: 15px; }
+    .stage-detail-list dl { display: block; }
+    .stage-detail-list dt { padding: 12px 0 2px; }
+    .stage-detail-list dd {
+      padding: 0 0 12px;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 14px;
+    }
+    .stage-detail-list dd:last-of-type { border-bottom: 0; }
+    .stage-detail-stat .num { font-size: 56px; }
+
+    /* ---------- Sustentabilidade — only first 2 flip-cards, stacked ---------- */
+    .sustain-grid { display: block; }
+    .sustain-img {
+      aspect-ratio: 16/10;
+      margin-bottom: 32px;
+    }
+    .sustain-img img { width: 100%; height: 100%; object-fit: cover; }
+    .sustain-stats {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    /* Show only the first 2 cards on mobile (80% waste · 30% cost) */
+    .sustain-stats .flip-card:nth-child(n+3) { display: none; }
+    .flip-card { aspect-ratio: 4/3; }
+    .flip-card-front .num { font-size: 56px; }
+    .flip-card-front .label { font-size: 12px; }
+    .flip-card-back { font-size: 13px; padding: 22px; }
+    .sustain-pillars {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-top: 32px;
+    }
+    .sustain-pillar { padding: 20px 0; border-top: 1px solid var(--line); }
+    .sustain-pillar:first-child { border-top: 0; }
+    /* Trim the 3rd pillar ("Sustentabilidade material") on mobile,
+       mirroring the flip-card :nth-child(n+3) hide above. */
+    .sustain-pillars .sustain-pillar:nth-child(n+3) { display: none; }
+
+    /* ---------- Comunidade ---------- */
+    .community-grid { display: block; }
+    .community-img { margin-bottom: 28px; }
+    .community-features { grid-template-columns: 1fr; gap: 24px; }
+
+    /* ---------- Projetos — mobile = accordion (no map) ---------- */
+    /* Order: header → tabs (with active panel inserted inline below clicked tab) */
+    #projetos .wrap {
+      display: flex;
+      flex-direction: column;
+    }
+    #projetos .projects-header { order: 1; }
+    #projetos .project-tabs    { order: 2; margin-top: 24px; margin-bottom: 0; }
+    #projetos .map-stage       { order: 3; display: none; }   /* hide map entirely */
+    /* When JS moves the panel inside .project-tabs, force it visible + full-width */
+    #projetos .project-tabs > .map-panel {
+      display: block;
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+      background: var(--bg);
+      animation: panelSlideDown .35s ease both;
+    }
+    @keyframes panelSlideDown {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .projects-header { display: block; }
+    .map-stage { display: block; }
+    .map-canvas { min-height: 480px; padding: 24px 16px; }
+    .map-canvas .map-eyebrow { font-size: 9px; }
+    /* Mobile: panel is a single card, content swaps in via .active. Height
+       follows the active article so there's no enormous empty box. */
+    .map-panel {
+      min-height: 0;
+      margin-top: 16px;
+      overflow: visible;
+    }
+    .map-project {
+      position: static;       /* take native flow */
+      display: none;          /* hidden by default */
+      transform: none;
+      pointer-events: auto;
+    }
+    .map-project.active {
+      display: flex;
+      opacity: 1;
+      transform: none;
+    }
+    .map-labels { inset: 24px 16px 0 16px; }
+    .map-label { padding: 5px 9px 6px; }
+    .map-label .label-coord { font-size: 8px; }
+    .map-label .label-name { font-size: 10px; }
+    .map-label .label-status { font-size: 8px; }
+    .map-project h3 { font-size: 22px; margin: 20px 18px 8px; }
+    .map-project > p { margin: 0 18px 14px; font-size: 13px; }
+    .project-meta { margin: 8px 18px 14px; }
+    .project-meta { display: block; }
+    .project-meta dt { padding: 10px 0 2px; }
+    .project-meta dd {
+      padding: 0 0 10px;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 14px;
+    }
+    .project-meta dd:last-of-type { border-bottom: 0; }
+    .typology-strip { grid-template-columns: 1fr; margin: 8px 18px 14px; }
+    .map-project .btn { margin: 0 18px 24px; }
+    .project-tabs { grid-template-columns: 1fr; }
+    .project-tab { border-right: 0; border-bottom: 1px solid var(--line); }
+    .project-tab:last-child { border-bottom: 0; }
+
+    /* ---------- Footer ---------- */
+    .footer { padding: 60px 0 32px; }
+    .footer h6 { font-size: 13px; }
+    .footer-bottom { font-size: 11px; }
+    .footer-bottom .links { margin-top: 4px; flex-wrap: wrap; row-gap: 8px; }
+
+    /* ---------- Section accent strip narrower on mobile ---------- */
+    .section::after { width: 48px; height: 3px; }
+  }
+
+  /* ============================================================
+     SMALL DESKTOP 901–1199px — narrow window, ease density
+     ============================================================ */
+  @media (min-width: 901px) and (max-width: 1199px) {
+    .wrap { padding: 0 32px; }
+    .nav-links { gap: 22px; font-size: 13px; }
   }
 </style>
 </head>
 <body>
 
+<!-- ===== Tailored by nineyards — agency attribution badge ===== -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,800;9..144,900&display=swap');
+  .ny-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px 10px 14px;
+    background: rgba(255, 255, 255, 0.60);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 999px;
+    box-shadow: 0 6px 28px rgba(10, 11, 13, 0.10), 0 1px 2px rgba(10, 11, 13, 0.05);
+    color: #0A0B0D;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    user-select: none;
+    pointer-events: none;
+  }
+  .ny-badge--footer { flex-shrink: 0; }
+  .ny-badge__label {
+    font-size: 9px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: #5E5E5E; line-height: 1; white-space: nowrap;
+  }
+  .ny-badge__sep { width: 1px; height: 14px; background: rgba(10, 11, 13, 0.15); flex-shrink: 0; }
+  .ny-badge__logo {
+    font-family: 'Fraunces', Georgia, "Times New Roman", serif;
+    font-weight: 900; font-size: 19px; letter-spacing: -0.015em; line-height: 1;
+    color: #0A0B0D; position: relative; padding-right: 11px;
+  }
+  .ny-badge__logo::after {
+    content: 'TM'; position: absolute; top: 1px; right: 0;
+    font-size: 7px; font-weight: 700; letter-spacing: 0.02em;
+  }
+  @media (max-width: 900px) {
+    .ny-badge {
+      padding: 6px 12px 6px 10px;
+      gap: 8px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.18), 0 1px 2px rgba(0,0,0,.10);
+    }
+    .ny-badge__logo { font-size: 14px; padding-right: 10px; }
+    .ny-badge__label { font-size: 8px; letter-spacing: 0.16em; }
+    .ny-badge__sep { height: 11px; }
+    .ny-badge__logo::after { font-size: 6px; top: 0; }
+  }
+</style>
+<!-- nineyards badge now lives in the footer -->
+
+<!-- ===== /badge ===== -->
+
 <!-- ============================== S0 NAV ============================== -->
 <nav class="nav">
   <div class="nav-inner">
-    <a href="#" class="nav-logo">
-      <span class="tag">IN</span><span class="rest">Habitus</span><sup>®</sup>
+    <a href="#" class="nav-logo" aria-label="inHabitus · início">
+      <img class="brand-mark" src="_assets/logo/inhabitus.svg" alt="inHabitus" /><sup>®</sup>
     </a>
     <div class="nav-links">
       <a href="#tecnologia">Tecnologia</a>
-      <a href="#modelo">Modelo</a>
+      <a href="#modelo">Cadeia de Valor</a>
       <a href="#processo">Processo</a>
       <a href="#sustentabilidade">Sustentabilidade</a>
       <a href="#projetos">Projetos</a>
     </div>
     <div class="nav-actions">
-      <span class="lang-toggle"><span class="on">PT</span> / EN</span>
-      <a class="btn btn-primary" href="#contacto">Contacte-nos</a>
+      <a class="btn btn-primary nav-cta" href="#contacto">Contacte-nos</a>
     </div>
+    <button class="nav-burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <!-- Mobile sheet -->
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <a href="#tecnologia">Tecnologia</a>
+    <a href="#modelo">Cadeia de Valor</a>
+    <a href="#processo">Processo</a>
+    <a href="#sustentabilidade">Sustentabilidade</a>
+    <a href="#projetos">Projetos</a>
+    <a href="#comunidade">Comunidade</a>
+    <a class="btn btn-primary" href="#contacto">Contacte-nos</a>
   </div>
 </nav>
 
@@ -1625,63 +2632,339 @@
     <div class="hero-grid">
       <div class="hero-left">
         <h1 class="hero-title">
-          <span class="line"><span class="word d1">Construção</span></span>
-          <span class="line"><span class="word d2 outlined blue">com</span> <span class="word d3">propósito.</span></span>
+          <span class="line"><span class="word d1">Construir</span></span>
+          <span class="line"><span class="word d2 outlined blue">sem</span> <span class="word d3">surpresas.</span></span>
         </h1>
         <p class="hero-lede">
-          Construir de forma <strong>responsável</strong> é também construir de forma <strong>inteligente</strong>. A INHabitus integra arquitetura, engenharia e tecnologia de construção 3D num só processo — verticalmente integrado, à escala.
+          A inHabitus integra arquitetura, engenharia e fabrico numa só equipa. Resultado: <strong>custo previsível</strong>, <strong>prazo controlado</strong> e qualidade auditável em cada unidade entregue.
         </p>
         <div class="hero-ctas">
-          <a class="btn btn-primary" href="#tecnologia">Ver tecnologia</a>
-          <a class="btn btn-outline" href="#projetos">Ver projetos</a>
+          <a class="btn btn-primary" href="#projetos">Ver projetos</a>
         </div>
       </div>
       <div class="hero-media reveal" id="hero-media">
-        <span class="hero-media-tag">Inhabitus · Carreço</span>
-        <img src="_assets/img/hero_villa.jpg" alt="Habitação INHabitus ao pôr do sol" />
+        <img src="_assets/img/streetfront.jpg" alt="Moradia inHabitus completa, vista de rua" />
       </div>
     </div>
 
     <div class="hero-stats reveal">
       <div class="hero-stat">
-        <div class="num">80<sup>%</sup></div>
-        <div class="label">Menos desperdício</div>
+        <div class="num">50<sup>%</sup></div>
+        <div class="label">Redução de prazo<sup class="footnote-ref">✱</sup></div>
       </div>
       <div class="hero-stat">
         <div class="num">30<sup>%</sup></div>
-        <div class="label">Poupança no custo</div>
+        <div class="label">Poupança de custo<sup class="footnote-ref">✱</sup></div>
       </div>
       <div class="hero-stat">
-        <div class="num">50<sup>%</sup></div>
-        <div class="label">Redução de energia</div>
+        <div class="num">80<sup>%</sup></div>
+        <div class="label">Redução de resíduos<sup class="footnote-ref">✱</sup></div>
       </div>
       <div class="hero-stat">
-        <div class="num">70<sup>%</sup></div>
-        <div class="label">Mais rápida na entrega</div>
+        <div class="num">80<sup>%</sup></div>
+        <div class="label">Redução de risco em obra<sup class="footnote-ref">✱</sup></div>
       </div>
     </div>
+    <p class="hero-stats-footnote reveal">
+      <span class="footnote-mark">✱</span> Valores aferidos em obra e certificados por entidade externa.
+    </p>
   </div>
 
-  <!-- Marquee strip -->
-  <div class="marquee">
-    <div class="marquee-track">
-      <span class="marquee-item">Construção 3D</span>
-      <span class="marquee-item">Eficiência Inteligente</span>
-      <span class="marquee-item">Inovação Segura</span>
-      <span class="marquee-item">Sustentabilidade Integrada</span>
-      <span class="marquee-item">Verticalmente Integrados</span>
-      <span class="marquee-item">Da terra à chave · 12 meses</span>
+  <!-- Positioning statement — replaces the previous marquee -->
+  <section class="positioning reveal" aria-labelledby="positioning-title">
+    <div class="wrap">
+      <div class="positioning-inner">
+        <h2 id="positioning-title" class="positioning-title">
+          <span class="pos-word pw-1">Habitação</span>
+          <span class="pos-word pw-2">reimaginada</span>
+          <span class="pos-word pw-3"><span class="pos-acc">à escala</span>.</span>
+        </h2>
+        <p class="positioning-lede">
+          Quando a construção <span class="pos-fade pf-1">deixa de ser projeto</span> e <span class="pos-fade pf-2">passa a ser sistema</span>, prazo e custo tornam-se <span class="pos-fade pf-3">previsíveis</span>. <span class="pos-fade pf-4">Industrialização</span> + <span class="pos-fade pf-5">integração vertical</span>, do estudo do terreno à entrega.
+        </p>
+      </div>
     </div>
-    <div class="marquee-track" aria-hidden="true">
-      <span class="marquee-item">Construção 3D</span>
-      <span class="marquee-item">Eficiência Inteligente</span>
-      <span class="marquee-item">Inovação Segura</span>
-      <span class="marquee-item">Sustentabilidade Integrada</span>
-      <span class="marquee-item">Verticalmente Integrados</span>
-      <span class="marquee-item">Da terra à chave · 12 meses</span>
-    </div>
-  </div>
+  </section>
 </header>
+
+<section class="section projects" id="projetos">
+  <div class="wrap">
+    <div class="projects-header reveal">
+      <div>
+        <span class="section-eyebrow peach">Projetos</span>
+        <h2 class="section-title projects-title">
+          <span class="pt-word pt-w1">Em&nbsp;breve,</span><br/>
+          <span class="pt-word pt-w2">consigo</span><span class="pt-dots"><span>.</span><span>.</span><span>.</span></span>
+        </h2>
+      </div>
+      <p class="section-lede">
+        A nossa <strong>verticalização</strong> e <strong>agilidade</strong> permitem-nos construir <strong>mais casas, a preços mais acessíveis</strong>. Um processo que <strong>democratiza</strong>, que cresce depressa e que, contamos, <strong>em breve estar consigo</strong>.
+      </p>
+    </div>
+
+    <!-- Bottom tab bar -->
+    <div class="project-tabs reveal">
+      <button class="project-tab active" data-project="carreco" data-status="construcao">
+        <span class="tab-eyebrow">Em construção</span>
+        <span class="tab-name">Viana do Castelo</span>
+        <span class="tab-meta">2026</span>
+      </button>
+      <button class="project-tab" data-project="alfena" data-status="esgotado">
+        <span class="tab-eyebrow">Esgotado</span>
+        <span class="tab-name">Alfena</span>
+        <span class="tab-meta">Alfena</span>
+      </button>
+      <button class="project-tab" data-project="setubal" data-status="breve">
+        <span class="tab-eyebrow">Em breve</span>
+        <span class="tab-name">Setúbal</span>
+        <span class="tab-meta">Setúbal</span>
+      </button>
+      <button class="project-tab" data-project="benavente" data-status="breve">
+        <span class="tab-eyebrow">Em breve</span>
+        <span class="tab-name">Benavente</span>
+        <span class="tab-meta">Benavente</span>
+      </button>
+      <button class="project-tab" data-project="barcelos" data-status="estudo">
+        <span class="tab-eyebrow">Em estudo</span>
+        <span class="tab-name">Barcelos</span>
+        <span class="tab-meta">2027</span>
+      </button>
+      <button class="project-tab" data-project="gandra" data-status="estudo">
+        <span class="tab-eyebrow">Em estudo</span>
+        <span class="tab-name">Gândra</span>
+        <span class="tab-meta">2027</span>
+      </button>
+      <button class="project-tab" data-project="gaia" data-status="estudo">
+        <span class="tab-eyebrow">Em estudo</span>
+        <span class="tab-name">Gaia</span>
+        <span class="tab-meta">2028</span>
+      </button>
+      <button class="project-tab" data-project="vizela" data-status="estudo">
+        <span class="tab-eyebrow">Em estudo</span>
+        <span class="tab-name">Vizela</span>
+        <span class="tab-meta">2028</span>
+      </button>
+    </div>
+
+    <!-- Map + Side panel -->
+    <div class="map-stage reveal">
+      <div class="map-canvas">
+        <span class="map-eyebrow">Portugal · Pipeline 2026–2028</span>
+        <svg viewBox="165 75 355 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="pt-map" preserveAspectRatio="xMidYMid meet">
+          <g class="pt-districts">
+            <path data-d="setubal" data-has-project="" d="M364,327 364,328 364,327 364,327 364,327 364,327ZM373,305 374,305 375,305 376,304 376,304 376,305 376,305 376,306 376,306 376,307 376,307 377,308 377,308 378,308 379,308 381,309 382,309 382,310 381,311 381,311 381,312 381,313 380,314 376,317 374,319 374,319 374,320 374,321 374,321 374,323 376,323 378,324 379,324 381,325 381,324 381,324 381,324 381,323 381,323 382,323 382,323 382,324 382,324 383,324 384,325 385,325 386,324 387,324 388,323 388,324 389,325 390,326 390,326 390,326 390,326 390,326 390,327 391,328 391,329 391,329 391,329 391,330 392,330 392,330 392,331 392,332 391,334 391,334 392,334 393,335 394,335 395,336 395,336 396,336 396,336 397,336 399,338 400,341 401,342 401,343 401,343 400,344 399,345 398,345 396,346 395,346 395,346 395,347 393,347 393,347 392,348 392,348 392,349 392,349 391,349 391,349 390,349 390,349 390,349 389,349 389,350 389,350 389,350 389,351 389,351 389,351 389,352 388,352 388,352 388,351 387,351 387,352 387,353 387,353 387,353 387,354 387,354 387,354 387,355 388,356 389,357 389,357 390,357 391,357 391,358 392,359 392,360 392,362 392,365 391,366 391,367 390,369 389,368 389,368 387,368 385,367 380,368 380,369 379,369 379,370 379,370 378,371 378,371 377,373 377,373 377,374 377,374 376,375 375,375 374,374 374,374 374,374 373,374 373,374 373,374 372,374 372,374 372,374 371,373 370,372 370,371 370,371 369,371 368,371 368,371 368,371 367,371 367,371 367,370 366,370 366,369 366,367 366,365 365,363 363,363 361,362 362,361 362,361 362,361 363,360 365,355 366,350 367,346 367,343 367,339 366,335 365,333 364,331 362,329 360,328 359,327 360,326 361,327 363,329 365,329 366,330 366,331 368,331 374,332 376,331 375,331 373,331 369,329 369,329 369,328 369,327 369,326 369,325 369,325 369,324 369,324 368,323 368,323 368,322 368,322 367,324 365,324 365,324 367,325 367,326 367,327 367,327 366,327 365,327 363,326 361,325 358,326 356,328 356,329 353,330 348,330 347,331 347,331 346,332 344,331 344,331 344,331 344,330 344,330 344,330 345,329 346,328 346,326 346,323 345,320 344,317 343,315 344,315 346,314 348,314 349,315 350,315 350,315 350,314 351,314 352,313 353,313 353,313 354,312 355,311 356,310 358,308 358,308 359,308 359,308 359,308 360,308 360,308 360,309 360,310 361,310 362,310 363,310 363,309 364,309 365,309 365,309 365,310 367,311 367,311 368,310 369,309 369,309 370,307 371,304 371,304 372,304 372,304Z"/>
+            <path data-d="acores" d="M319,287 320,288 319,288 319,288 317,288 317,288 316,288 316,287 316,287 316,287 316,287 316,286 316,286 317,286 318,286 318,286 319,286 319,287ZM305,264 308,264 308,264 309,264 309,264 309,264 310,264 310,264 311,264 313,263 316,263 316,264 317,265 317,265 317,266 316,267 313,267 312,267 311,267 310,267 310,267 309,268 309,267 308,267 307,267 305,267 302,265 302,264 302,262 304,262 304,262 305,263 305,263 305,263 305,264 305,264ZM256,248 256,249 256,249 255,249 253,249 253,249 252,249 252,250 251,250 251,249 251,249 250,249 247,249 247,249 246,248 245,247 245,246 246,245 246,245 248,245 249,245 251,246 252,247 252,247 252,247 252,247 253,247 253,247 254,248 255,248ZM244,246 243,246 243,246 243,246 242,246 242,246 241,246 241,246 240,245 240,245 239,244 239,244 240,244 240,244 241,244 241,243 241,243 241,243 242,242 243,243 244,244 244,245 244,245 243,245 243,245 243,246 243,246 243,246ZM252,240 256,242 259,244 261,244 261,245 262,245 261,245 261,245 260,245 260,245 259,245 258,245 258,244 258,244 257,244 257,244 257,244 256,244 256,244 256,244 255,243 255,243 253,242 253,242 252,241 252,241 252,241 252,241 252,241 251,241 251,241 251,241 251,241 251,241 251,241 250,240 250,240 250,240 250,240 251,240 251,240ZM277,242 277,242 276,243 276,243 275,243 274,243 273,242 273,243 273,243 272,242 272,242 271,242 271,242 270,241 270,241 270,240 269,239 270,239 271,238 271,238 275,238 275,239 276,239 277,240 277,240 277,241 277,241 277,241 277,241 277,241 277,241 277,242 277,242ZM256,230 256,230 257,230 257,231 258,231 258,231 258,232 258,232 257,232 257,232 257,232 256,232 256,232 255,232 255,231 255,231 256,230 256,230 256,230ZM190,219 190,219 190,219 191,220 191,220 191,221 191,222 190,223 190,223 189,223 189,223 189,223 188,223 188,223 188,223 188,222 188,222 188,221 188,221 188,220 188,220 188,220 188,219 189,219 189,219 189,219 189,219 189,219ZM191,215 191,215 191,215 190,214 190,214 190,214 191,213 191,213 191,213 192,213 192,214Z"/>
+            <path data-d="madeira" d="M231,362 234,363 236,362 238,361 239,360 241,360 245,359 247,360 249,362 251,363 255,366 256,367 258,367 261,367 263,368 264,369 265,368 266,368 267,368 268,369 266,369 263,371 262,371 261,372 258,376 257,377 256,380 252,381 247,382 240,381 224,374 221,372 218,369 215,366 214,364 214,362 215,361 216,360 217,360 219,356 220,356 220,356 221,356 222,356 223,357 225,360 226,360 227,360 229,361ZM301,330 303,331 304,330 304,333 304,334 305,335 302,335 300,335 299,336 298,337 297,338 295,338 294,337 294,337 295,337 295,336 296,335 297,332 299,330Z"/>
+            <path data-d="aveiro" d="M389,201 389,202 389,202 388,203 387,203 387,203 386,204 386,204 385,206 385,206 384,207 384,207 381,207 380,206 380,206 380,205 381,205 381,204 381,203 381,203 382,203 382,203 382,202 382,201 382,201 382,201 382,199 381,198 381,198 380,198 379,199 379,199 378,199 378,199 378,197 378,197 378,195 376,194 375,195 375,197 374,197 373,197 367,191 367,191 367,190 368,187 369,183 369,183 369,183 369,184 369,185 370,183 371,182 371,183 372,183 372,182 372,182 371,182 371,181 371,181 372,181 372,181 372,181 373,181 373,181 374,181 374,179 373,179 373,178 373,177 374,177 375,177 376,177 377,176 378,175 377,175 376,176 375,176 374,176 374,176 373,176 373,175 372,173 374,171 374,169 374,170 373,171 373,172 373,171 372,172 371,174 371,176 371,177 371,178 370,180 369,182 369,182 374,159 374,158 374,157 376,157 377,158 379,157 380,157 380,157 381,157 381,157 382,158 382,158 383,157 383,156 383,156 384,155 385,156 386,156 386,157 387,158 387,158 387,158 387,157 387,157 387,156 387,156 388,155 389,156 392,154 392,154 392,153 395,155 396,155 396,156 396,157 396,158 400,160 400,160 401,160 401,159 401,159 402,159 402,158 403,158 403,158 403,159 403,159 403,159 403,159 401,162 401,162 401,163 401,164 401,164 401,166 402,167 402,168 401,169 401,169 400,169 400,169 400,168 399,168 399,168 398,169 397,169 396,169 396,168 394,169 395,171 395,171 395,172 393,174 392,175 391,176 391,177 391,178 391,178 391,178 391,179 392,179 392,180 392,181 392,182 392,183 393,184 394,184 395,185 392,185 392,186 392,186 392,187 392,188 393,189 393,190 393,190 394,191 394,192 391,193 390,194 390,194 390,195 391,195 391,196 391,197 389,199Z"/>
+            <path data-d="leiria" d="M330,265 330,266 330,265ZM400,222 399,224 400,225 402,229 401,229 401,229 401,230 401,230 401,231 401,231 401,232 400,234 399,234 399,234 398,235 398,235 397,235 397,236 397,236 396,236 394,237 394,237 393,237 393,238 393,238 393,238 393,239 393,239 393,240 391,240 390,240 390,240 390,241 391,242 390,242 389,242 388,242 388,243 385,243 385,244 384,243 384,243 384,242 384,241 384,240 383,237 382,237 382,238 381,238 380,238 378,240 377,241 376,241 375,240 373,242 373,242 372,243 373,243 373,244 373,245 373,246 373,246 374,246 374,247 374,248 374,248 374,249 373,249 373,249 372,250 372,252 372,254 373,255 372,256 371,258 371,258 370,258 370,258 369,258 369,258 369,258 369,259 370,260 370,260 370,260 370,260 369,261 369,261 366,261 363,261 361,262 361,262 359,266 359,267 358,267 357,267 356,269 356,270 356,271 356,273 355,273 354,272 353,272 352,272 352,272 352,273 350,274 349,276 348,277 347,278 346,278 345,274 345,273 344,272 344,272 344,272 343,272 343,272 340,274 338,274 338,274 338,272 337,271 335,269 335,268 335,268 338,269 342,266 342,265 344,265 344,266 345,266 345,265 345,265 344,264 345,262 346,261 346,260 347,260 349,259 350,257 350,256 351,254 351,253 351,252 352,250 352,248 356,237 361,223 361,223 363,224 363,224 364,225 365,225 366,225 366,224 368,224 370,224 371,224 372,224 373,225 374,226 374,226 375,226 375,227 375,227 376,226 376,226 377,225 377,225 377,224 378,224 378,224 378,225 379,225 379,226 379,227 379,228 379,229 380,229 380,229 380,229 381,228 382,227 384,226 385,226 385,225 386,225 386,226 387,227 387,228 387,229 387,230 387,230 387,231 386,231 387,231 387,231 389,230 391,228 392,228 393,228 393,228 393,228 393,227 393,227 393,226 392,226 392,226 392,225 393,224 395,222 397,223 398,221 399,221 399,221 400,222Z"/>
+            <path data-d="viana-do-castelo" data-has-project="" d="M398,103 398,103 398,103 397,103 392,106 391,106 387,106 386,107 385,107 385,107 384,108 383,108 383,108 382,108 382,108 381,108 381,109 381,109 381,110 381,111 381,111 380,112 380,112 380,113 380,113 380,114 379,116 379,116 378,115 378,115 376,115 375,114 375,114 374,114 374,115 374,115 373,115 371,115 367,117 366,117 365,116 365,116 365,116 365,114 365,113 365,112 366,111 369,111 370,111 371,110 371,109 366,111 365,111 364,111 363,110 362,108 362,106 362,103 362,101 362,100 363,100 366,97 368,95 369,92 369,92 370,91 372,91 373,90 373,89 374,88 374,87 375,87 376,86 378,86 379,86 381,85 382,84 389,83 390,83 392,81 392,81 392,81 393,81 394,81 396,79 396,80 397,81 397,84 397,85 397,86 398,86 399,85 400,85 401,85 402,86 402,87 402,88 402,89 401,90 399,91 398,92 396,95 395,97 395,98 396,99 398,100 398,100 398,101Z"/>
+            <path data-d="beja" d="M453,347 453,347 454,347 455,347 457,347 457,346 458,346 458,346 459,345 461,345 461,346 461,346 461,348 460,349 460,351 459,353 458,355 458,356 457,357 456,357 453,356 452,356 452,357 451,358 451,359 451,359 450,359 449,359 449,359 448,359 447,359 447,359 445,360 445,360 445,361 445,361 445,362 445,363 444,366 443,368 442,371 437,375 436,376 435,378 435,381 434,382 434,383 433,384 432,385 432,385 432,385 432,386 432,386 432,387 431,387 432,388 432,388 432,388 432,388 432,389 432,389 432,389 431,390 429,390 428,390 427,391 427,392 426,392 426,392 425,391 425,391 422,391 418,393 417,394 417,394 417,394 416,394 416,394 415,395 415,395 415,395 414,395 413,396 413,396 413,397 412,397 411,397 410,397 408,398 408,398 407,398 407,399 407,399 408,400 408,400 407,400 406,401 404,402 404,402 403,402 401,402 400,402 399,402 395,399 394,399 393,398 393,398 393,397 393,396 392,395 391,396 390,396 390,396 389,396 388,396 386,397 386,397 385,397 385,398 385,399 384,399 383,399 381,399 380,399 378,397 378,397 376,398 375,398 375,398 375,399 375,399 374,399 374,398 372,398 370,398 370,397 369,397 369,396 368,396 367,396 366,395 366,394 366,394 366,392 366,389 366,387 366,386 365,386 365,385 365,382 366,380 366,378 367,378 368,378 369,376 369,376 368,376 367,377 366,377 365,376 366,372 366,370 367,370 367,371 367,371 368,371 368,371 368,371 369,371 370,371 370,371 370,372 371,373 372,374 372,374 372,374 373,374 373,374 373,374 374,374 374,374 374,374 375,375 376,375 377,374 377,374 377,373 377,373 378,371 378,371 379,370 379,370 379,369 380,369 380,368 385,367 387,368 389,368 389,368 390,369 391,367 391,366 392,365 392,362 392,360 392,359 391,358 391,357 390,357 389,357 389,357 388,356 387,355 387,354 387,354 387,354 387,353 387,353 387,353 387,352 387,351 388,351 388,352 388,352 389,352 389,351 389,351 389,351 389,350 389,350 389,350 389,349 390,349 390,349 390,349 391,349 391,349 392,349 392,349 392,348 392,348 393,347 393,347 395,347 395,346 395,346 396,346 398,345 399,345 400,344 401,343 401,343 401,342 400,341 399,338 399,337 403,337 404,337 405,337 405,338 406,338 406,339 407,339 407,339 408,338 409,338 409,338 411,339 412,340 416,342 419,343 420,343 424,345 424,345 428,345 429,345 430,346 432,346 433,346 433,345 433,344 434,343 436,343 436,342 437,342 437,342 437,341 438,341 438,340 438,340 438,339 440,339 441,338 442,338 442,338 443,337 444,337 444,337 444,337 444,338 445,338 445,338 445,338 445,339 445,339 445,340 446,340 446,341 447,342 448,342 448,343 449,343 449,343 449,345 449,345 450,346 450,347 451,347 452,347 452,347 452,347Z"/>
+            <path data-d="evora" d="M447,308 445,310 445,311 444,311 444,312 444,314 444,316 444,316 444,317 444,317 444,317 445,318 445,318 445,319 442,322 441,326 441,326 442,327 441,328 441,329 440,329 441,330 442,331 448,338 448,338 448,339 449,340 449,340 450,341 450,341 452,346 453,347 452,347 452,347 452,347 451,347 450,347 450,346 449,345 449,345 449,343 449,343 448,343 448,342 447,342 446,341 446,340 445,340 445,339 445,339 445,338 445,338 445,338 444,338 444,337 444,337 444,337 443,337 442,338 442,338 441,338 440,339 438,339 438,340 438,340 438,341 437,341 437,342 437,342 436,342 436,343 434,343 433,344 433,345 433,346 432,346 430,346 429,345 428,345 424,345 424,345 420,343 419,343 416,342 412,340 411,339 409,338 409,338 408,338 407,339 407,339 406,339 406,338 405,338 405,337 404,337 403,337 399,337 399,338 397,336 396,336 396,336 395,336 395,336 394,335 393,335 392,334 391,334 391,334 392,332 392,331 392,330 392,330 391,330 391,329 391,329 391,329 391,328 390,327 390,326 390,326 390,326 390,326 390,326 389,325 388,324 388,323 387,324 386,324 385,325 384,325 383,324 382,324 382,324 382,323 382,323 381,323 381,323 381,324 381,324 381,324 381,325 379,324 378,324 376,323 374,323 374,321 374,321 374,320 374,319 374,319 376,317 380,314 381,313 381,312 381,311 381,311 382,310 382,309 381,309 379,308 382,306 384,306 384,305 386,304 386,304 387,304 387,304 387,304 388,304 388,303 388,303 388,303 388,303 389,303 390,303 391,303 391,303 391,303 392,303 392,302 392,302 392,302 393,302 394,304 394,304 396,305 397,305 397,305 397,305 397,306 397,306 398,306 398,306 398,306 398,307 399,307 400,308 400,307 401,306 401,306 400,305 400,305 399,305 399,304 398,303 398,303 399,302 398,301 398,301 397,301 395,300 394,300 394,299 394,299 394,298 394,298 395,297 395,297 395,296 395,295 395,295 395,294 396,294 396,294 397,294 397,293 398,292 399,292 399,291 400,291 401,291 402,292 402,292 402,292 402,293 402,294 402,294 403,294 403,294 403,294 403,293 403,293 403,293 403,293 404,293 404,293 405,293 405,293 405,293 406,294 406,295 406,296 406,296 407,297 408,297 408,297 409,296 409,296 409,296 410,295 411,295 412,295 414,299 416,300 416,300 417,300 417,300 418,300 420,299 420,299 421,298 422,298 422,298 423,298 423,298 424,298 424,298 426,298 426,298 426,298 426,298 427,297 427,297 428,296 428,296 430,296 430,296 431,295 431,295 431,294 431,294 430,293 431,293 431,293 432,293 432,293 432,294 434,294 435,295 435,296 435,297 435,297 435,298 436,299 437,300 437,301 438,302 437,303 438,304 438,305 439,306 440,306 441,306 441,306 442,306 443,305 444,304 445,303 446,303 447,304 447,304 448,304 448,305 448,306 447,307 447,307 447,308 447,308Z"/>
+            <path data-d="faro" d="M412,425 412,425 412,425 412,424 412,424ZM414,425 414,425 412,426 411,426 410,425 410,425 412,425 413,425 414,423 415,424 415,424 415,424 415,425ZM414,424 413,424 412,424 412,424 412,424 412,424 413,424 413,423 413,423 413,424 413,424 413,424 413,424ZM434,392 435,393 435,394 435,396 435,397 436,399 436,404 437,406 436,407 437,408 437,411 438,411 438,412 438,412 438,412 438,412 438,413 437,412 436,412 435,412 434,412 432,412 430,414 429,414 426,416 426,417 418,422 417,424 416,424 415,423 414,423 411,423 410,423 409,423 409,423 408,423 408,423 408,423 408,424 408,424 407,423 405,421 402,419 400,419 398,418 396,418 392,418 390,418 389,417 387,418 385,418 382,417 382,417 380,416 377,416 375,416 374,416 374,416 372,418 369,418 368,418 367,419 366,419 365,420 364,420 363,421 362,420 361,421 361,422 360,422 359,423 359,423 358,423 357,422 357,422 356,422 356,420 357,419 357,419 359,416 360,414 360,413 360,411 361,410 362,409 363,406 362,405 362,404 363,402 364,400 364,399 365,397 366,394 366,395 367,396 368,396 369,396 369,397 370,397 370,398 372,398 374,398 374,399 375,399 375,399 375,398 375,398 376,398 378,397 378,397 380,399 381,399 383,399 384,399 385,399 385,398 385,397 386,397 386,397 388,396 389,396 390,396 390,396 391,396 392,395 393,396 393,397 393,398 393,398 394,399 395,399 399,402 400,402 401,402 403,402 404,402 404,402 406,401 407,400 408,400 408,400 407,399 407,399 407,398 408,398 408,398 410,397 411,397 412,397 413,397 413,396 413,396 414,395 415,395 415,395 415,395 416,394 416,394 417,394 417,394 417,394 418,393 422,391 425,391 425,391 426,392 426,392 427,392 427,391 428,390 429,390 431,390 432,389 433,390 433,390 434,391Z"/>
+            <path data-d="lisboa" d="M353,304 352,305 352,305 352,304 353,303 353,302 354,302 354,302 354,302 354,302 354,303ZM356,302 355,302 355,302 355,301 355,301 356,301 356,302ZM355,300 354,300 355,299 355,298 355,299ZM359,303 358,303 358,304 359,305 359,306 359,306 360,308 359,308 359,308 359,307 358,307 358,305 357,304 358,303 357,303 356,302 356,300 355,299 357,294 359,292 361,291 362,290 364,290 365,290 367,288 367,288 367,288 367,289 367,289 366,289 365,290 363,291 364,291 364,292 363,293 363,294 362,295 362,296 360,301 359,302ZM343,272 344,272 344,272 344,272 345,273 345,274 346,278 347,278 348,277 349,276 350,274 352,273 352,272 352,272 353,272 354,272 355,273 356,273 357,275 357,276 360,277 362,276 363,277 365,280 365,280 364,281 362,280 362,281 361,281 361,282 361,282 362,282 362,282 362,283 363,284 364,285 364,285 365,286 366,286 366,286 366,287 367,288 364,289 360,290 359,290 358,292 356,296 353,301 351,303 351,304 350,305 351,307 351,309 351,310 350,312 347,313 345,313 341,313 340,314 339,315 337,313 335,313 334,312 332,313 331,312 331,311 331,310 330,307 330,306 331,305 331,304 332,303 334,298 334,294 333,291 334,290 334,288 336,284 337,282 338,280 338,277 338,275 338,274 338,274 340,274 343,272Z"/>
+            <path data-d="portalegre" d="M430,248 431,249 432,254 433,254 435,256 436,257 437,258 438,259 438,260 439,261 440,261 442,262 443,263 443,264 442,266 442,267 442,267 442,269 442,270 442,271 443,272 446,275 445,276 445,278 445,279 446,280 447,281 449,281 450,282 451,283 451,284 450,285 450,285 451,286 451,286 452,287 453,286 454,286 455,285 457,286 458,287 459,287 459,289 460,290 459,291 460,291 460,292 460,293 459,293 458,297 456,298 455,299 456,301 456,302 456,303 455,303 455,303 454,304 453,304 451,305 450,305 450,306 449,307 449,308 448,308 447,308 447,308 447,308 447,307 447,307 448,306 448,305 448,304 447,304 447,304 446,303 445,303 444,304 443,305 442,306 441,306 441,306 440,306 439,306 438,305 438,304 437,303 438,302 437,301 437,300 436,299 435,298 435,297 435,297 435,296 435,295 434,294 432,294 432,293 432,293 431,293 431,293 430,293 431,294 431,294 431,295 431,295 430,296 430,296 428,296 428,296 427,297 427,297 426,298 426,298 426,298 426,298 424,298 424,298 423,298 423,298 422,298 422,298 421,298 420,299 420,299 418,300 417,300 417,300 416,300 416,300 414,299 412,295 411,295 410,295 409,296 409,296 409,296 408,297 408,297 407,297 406,296 406,296 406,295 406,294 405,293 405,293 405,293 404,293 404,293 403,293 403,293 403,293 403,293 403,294 403,294 403,294 402,294 402,294 402,293 402,292 402,292 402,292 401,291 400,291 399,291 399,292 398,292 397,293 395,292 394,292 394,291 394,291 394,290 393,289 393,289 393,288 392,288 392,287 391,287 390,286 390,285 392,283 392,282 395,280 398,277 399,276 400,275 401,274 401,274 402,274 403,274 403,274 404,273 404,273 405,272 406,270 406,270 406,269 406,269 409,267 410,265 410,265 410,265 409,264 407,262 408,259 409,257 410,256 411,256 412,256 414,258 414,258 414,258 415,258 415,258 416,257 416,257 417,256 418,255 419,254 420,253 421,253 421,252 421,251 422,250 423,250 424,250 425,250 426,250 427,249 428,249 429,248 430,248 430,248Z"/>
+            <path data-d="santarem" data-has-project="" d="M393,240 393,241 394,241 394,242 395,242 395,242 396,243 396,243 396,243 396,244 396,245 395,245 395,247 396,249 396,250 399,251 400,252 401,252 403,252 404,251 404,251 404,251 404,250 404,249 404,248 404,247 405,244 405,243 406,243 408,244 409,244 409,244 410,245 410,245 410,246 410,246 410,247 410,248 410,249 410,249 411,249 411,249 412,249 413,250 414,251 415,252 416,254 416,254 417,255 417,256 416,257 416,257 415,258 415,258 414,258 414,258 414,258 412,256 411,256 410,256 409,257 408,259 407,262 409,264 410,265 410,265 410,265 409,267 406,269 406,269 406,270 406,270 405,272 404,273 404,273 403,274 403,274 402,274 401,274 401,274 400,275 399,276 398,277 395,280 392,282 392,283 390,285 390,286 391,287 392,287 392,288 393,288 393,289 393,289 394,290 394,291 394,291 394,292 395,292 397,293 397,294 396,294 396,294 395,294 395,295 395,295 395,296 395,297 395,297 394,298 394,298 394,299 394,299 394,300 395,300 397,301 398,301 398,301 399,302 398,303 398,303 399,304 399,305 400,305 400,305 401,306 401,306 400,307 400,308 399,307 398,307 398,306 398,306 398,306 397,306 397,306 397,305 397,305 397,305 396,305 394,304 394,304 393,302 392,302 392,302 392,302 392,303 391,303 391,303 391,303 390,303 389,303 388,303 388,303 388,303 388,303 388,304 387,304 387,304 387,304 386,304 386,304 384,305 384,306 382,306 379,308 378,308 377,308 377,308 376,307 376,307 376,306 376,306 376,305 376,305 376,304 376,304 375,305 374,305 373,305 372,304 372,304 371,304 371,304 370,307 369,309 369,309 368,310 367,311 367,311 365,310 365,309 365,309 364,309 363,309 363,310 362,310 361,310 360,310 360,309 360,308 360,308 359,306 359,306 359,305 358,304 358,303 359,303 359,302 360,301 362,296 362,295 363,294 363,293 364,292 364,291 363,291 365,290 366,289 367,289 367,289 367,288 367,288 367,287 368,287 367,288 366,287 366,286 366,286 365,286 364,285 364,285 363,284 362,283 362,282 362,282 361,282 361,282 361,281 362,281 362,280 364,281 365,280 365,280 363,277 362,276 360,277 357,276 357,275 356,273 356,271 356,270 356,269 357,267 358,267 359,267 359,266 361,262 361,262 363,261 366,261 369,261 369,261 370,260 370,260 370,260 370,260 369,259 369,258 369,258 369,258 370,258 370,258 371,258 371,258 372,256 373,255 372,254 372,252 372,250 373,249 373,249 374,249 374,248 374,248 374,247 374,246 373,246 373,246 373,245 373,244 373,243 372,243 373,242 373,242 375,240 376,241 377,241 378,240 380,238 381,238 382,238 382,237 383,237 384,240 384,241 384,242 384,243 384,243 385,244 385,243 388,243 388,242 389,242 390,242 391,242 390,241 390,240 390,240 391,240Z"/>
+            <path data-d="braga" data-has-project="" d="M409,133 408,134 408,134 408,135 408,135 408,135 407,135 407,136 407,136 406,136 406,136 405,137 405,136 404,135 403,136 402,135 400,133 400,133 400,132 399,131 396,130 395,132 394,132 393,133 392,133 391,134 391,134 390,133 390,133 387,133 386,134 385,134 384,133 384,133 383,133 382,133 381,134 381,134 381,134 380,135 380,135 377,135 376,135 376,135 376,135 376,134 375,133 375,133 376,132 376,132 376,132 377,131 376,131 376,131 375,130 375,130 374,129 373,129 373,128 372,128 371,128 370,127 369,127 367,127 367,127 367,125 367,124 367,123 366,122 366,119 365,118 365,117 365,116 365,116 366,117 367,117 371,115 373,115 374,115 374,115 374,114 375,114 375,114 376,115 378,115 378,115 379,116 379,116 380,114 380,113 380,113 380,112 380,112 381,111 381,111 381,110 381,109 381,109 381,108 382,108 382,108 383,108 383,108 384,108 385,107 385,107 386,107 387,106 391,106 392,106 397,103 398,103 398,103 398,103 398,103 402,103 405,103 405,103 405,103 405,104 404,104 404,105 404,107 403,107 403,109 403,109 402,110 401,111 402,111 403,111 403,111 403,111 404,111 404,111 405,111 405,111 406,111 406,111 408,112 408,112 408,112 408,113 408,114 407,117 408,117 409,117 410,118 410,118 412,118 413,118 414,118 415,117 416,117 416,117 417,119 417,120 415,123 414,123 413,124 413,124 413,125 412,125 412,125 411,125 411,125 411,126 410,128 411,128 410,129 410,129 410,130 409,131 409,131 409,131 409,131 409,132 409,132Z"/>
+            <path data-d="braganca" d="M460,93 460,93 462,94 463,94 466,94 467,93 468,91 469,91 471,94 473,95 476,95 478,94 479,93 480,93 481,94 481,95 481,98 481,99 482,99 483,99 483,101 481,106 481,107 481,107 480,108 481,109 481,109 481,110 481,111 482,112 482,114 484,114 484,114 485,114 486,113 486,113 486,112 487,112 491,113 494,114 496,116 498,118 499,119 500,120 497,123 496,125 495,125 495,126 496,126 496,127 494,130 494,131 492,131 491,131 491,132 491,132 491,132 491,133 491,133 490,133 490,133 490,133 488,136 486,137 485,138 485,139 482,140 481,140 478,140 477,140 476,141 474,144 474,145 474,145 472,147 471,148 471,148 471,150 471,151 469,154 468,155 467,155 464,155 462,155 462,155 459,155 455,153 454,152 454,151 454,150 454,150 454,149 454,149 453,148 453,148 453,148 452,148 452,147 452,147 453,146 452,146 450,147 450,148 449,148 447,147 443,148 442,148 440,147 440,147 438,145 437,144 436,144 437,143 437,143 437,142 438,142 438,142 439,142 438,142 438,141 438,141 439,140 439,139 440,138 440,138 440,138 440,137 441,136 442,135 441,135 441,134 440,133 440,132 440,128 442,127 442,127 443,127 443,126 444,125 444,124 445,123 445,123 446,123 446,123 446,123 447,122 446,122 446,122 446,121 446,121 446,120 446,119 446,117 447,112 449,109 449,108 449,108 450,108 450,107 450,107 450,106 449,105 448,103 448,103 448,102 448,100 448,99 448,98 448,98 449,97 449,96 448,94 448,93 449,92 450,92 451,91 451,91 453,92 454,93 456,94 458,93 459,92Z"/>
+            <path data-d="castelo-branco" d="M462,209 461,209 459,211 458,211 457,212 457,213 457,214 457,215 457,217 458,218 459,219 460,219 460,219 461,219 462,221 463,222 465,226 464,227 464,228 464,229 464,229 463,231 463,231 463,232 463,232 463,232 463,233 463,233 463,234 463,235 462,236 461,238 461,238 459,238 459,239 459,240 459,240 459,241 459,241 459,242 458,243 458,244 458,244 458,245 458,245 458,247 457,247 449,248 448,248 447,247 446,248 444,248 443,248 442,248 441,248 430,248 430,248 430,248 429,248 428,249 427,249 426,250 425,250 424,250 423,250 422,250 421,251 421,252 421,253 420,253 419,254 418,255 417,256 417,255 416,254 416,254 415,252 414,251 413,250 412,249 411,249 411,249 410,249 410,249 410,248 410,247 410,246 410,246 410,245 410,245 409,244 409,244 408,244 406,243 405,243 405,244 404,247 404,248 404,249 404,250 404,251 404,251 404,251 403,252 401,252 400,252 399,251 396,250 396,249 395,247 395,245 396,245 396,244 396,243 396,243 396,243 395,242 395,242 394,242 394,241 393,241 393,240 393,239 393,239 393,238 393,238 393,238 393,237 394,237 394,237 396,236 397,236 397,236 397,235 398,235 398,235 399,234 399,234 400,234 401,232 402,231 402,230 402,230 402,230 403,230 404,229 405,229 406,229 406,229 406,228 406,228 406,228 407,228 407,228 408,227 408,227 408,227 409,227 409,228 409,227 410,226 410,226 411,226 412,226 412,226 412,225 412,224 412,224 413,223 414,223 415,222 415,222 416,223 416,223 417,224 417,222 417,221 418,221 418,221 418,221 418,221 418,221 419,221 419,221 420,220 421,220 421,220 421,219 421,219 421,218 421,218 419,217 418,216 418,215 417,215 417,214 417,213 419,211 419,210 420,210 421,210 423,208 424,208 426,207 427,206 428,204 429,205 431,204 431,204 432,204 432,203 432,202 433,201 435,198 437,200 439,201 439,200 441,200 442,199 442,199 443,199 444,198 444,198 445,199 444,203 444,205 443,205 443,206 442,206 442,207 442,207 442,207 443,208 443,208 444,208 445,208 446,208 448,207 451,208 451,207 452,207 452,206 452,206 452,205 453,205 453,205 454,205 454,206 454,207 455,207 456,207 457,207 458,207 459,207 459,207 460,208 461,208 461,209 462,209Z"/>
+            <path data-d="coimbra" d="M364,216 365,217 366,218 365,218 365,218 364,217 364,217 364,216 364,217ZM373,197 374,197 375,197 375,195 376,194 378,195 378,197 378,197 378,199 378,199 379,199 379,199 380,198 381,198 381,198 382,199 382,201 382,201 382,201 382,202 382,203 382,203 381,203 381,203 381,204 381,205 380,205 380,206 380,206 381,207 384,207 384,207 385,206 385,206 386,204 386,204 387,203 387,203 388,203 389,202 389,202 389,201 390,202 390,202 392,202 393,203 394,204 395,204 395,205 396,205 396,205 396,204 396,204 396,204 396,203 398,203 401,204 405,201 408,199 410,198 411,197 412,195 414,194 415,193 415,193 416,193 417,194 417,195 417,195 418,196 417,196 417,197 417,197 416,197 416,197 416,198 416,198 416,199 417,199 418,199 418,200 418,202 418,203 419,203 419,204 419,204 418,205 418,206 417,206 417,207 416,209 418,210 419,211 417,213 417,214 417,215 418,215 418,216 419,217 421,218 421,218 421,219 421,219 421,220 421,220 420,220 419,221 419,221 418,221 418,221 418,221 418,221 418,221 417,221 417,222 417,224 416,223 416,223 415,222 415,222 414,223 413,223 412,224 412,224 412,225 412,226 412,226 411,226 410,226 410,226 409,227 409,228 409,227 408,227 408,227 408,227 407,228 407,228 406,228 406,228 406,228 406,229 406,229 405,229 404,229 403,230 402,230 402,230 402,230 402,231 401,232 401,231 401,231 401,230 401,230 401,229 401,229 402,229 400,225 399,224 400,222 400,222 399,221 399,221 398,221 397,223 395,222 393,224 392,225 392,226 392,226 393,226 393,227 393,227 393,228 393,228 393,228 392,228 391,228 389,230 387,231 387,231 386,231 387,231 387,230 387,230 387,229 387,228 387,227 386,226 386,225 385,225 385,226 384,226 382,227 381,228 380,229 380,229 380,229 379,229 379,228 379,227 379,226 379,225 378,225 378,224 378,224 377,224 377,225 377,225 376,226 376,226 375,227 375,227 375,226 374,226 374,226 373,225 372,224 371,224 370,224 368,224 366,224 366,225 365,225 364,225 363,224 363,224 361,223 361,223 363,218 363,217 364,218 365,218 367,218 367,218 366,217 365,216 364,216 362,216 361,215 361,214 361,213 361,211 363,208 366,194 367,191 367,191Z"/>
+            <path data-d="guarda" d="M462,155 462,157 462,158 462,158 462,159 464,161 465,162 466,165 466,166 467,167 467,167 468,168 468,168 468,169 467,170 467,171 467,172 467,172 467,173 467,173 467,174 467,175 467,176 468,178 468,181 468,182 468,183 468,184 467,186 466,187 467,188 467,189 468,190 468,190 468,192 468,192 467,194 466,197 466,199 468,201 469,202 468,204 468,204 466,206 465,206 465,207 465,208 465,208 465,208 464,209 463,209 462,209 462,209 461,209 461,208 460,208 459,207 459,207 458,207 457,207 456,207 455,207 454,207 454,206 454,205 453,205 453,205 452,205 452,206 452,206 452,207 451,207 451,208 448,207 446,208 445,208 444,208 443,208 443,208 442,207 442,207 442,207 442,206 443,206 443,205 444,205 444,203 445,199 444,198 444,198 443,199 442,199 442,199 441,200 439,200 439,201 437,200 435,198 433,201 432,202 432,203 432,204 431,204 431,204 429,205 428,204 427,206 426,207 424,208 423,208 421,210 420,210 419,210 419,211 418,210 416,209 417,207 417,206 418,206 418,205 419,204 419,204 419,203 418,203 418,202 418,200 418,199 417,199 416,199 416,198 416,198 416,197 416,197 417,197 417,197 417,196 418,196 417,195 417,195 417,194 416,193 417,192 418,192 419,192 420,191 422,190 423,189 426,188 429,188 429,186 430,183 431,182 431,180 430,179 429,178 428,177 429,176 429,176 429,176 429,175 429,175 427,174 427,173 427,173 427,172 428,171 428,170 429,168 429,168 429,168 430,167 431,168 432,168 433,168 434,170 435,170 435,171 436,171 436,170 438,168 438,167 437,166 437,166 437,164 438,164 440,164 441,163 442,162 442,161 442,161 441,160 441,160 440,160 440,159 440,158 440,158 440,158 441,158 442,157 441,156 441,154 442,152 443,148 447,147 449,148 450,148 450,147 452,146 453,146 452,147 452,147 452,148 453,148 453,148 453,148 454,149 454,149 454,150 454,150 454,151 454,152 455,153 459,155 462,155 462,155Z"/>
+            <path data-d="porto" data-has-project="" d="M409,133 409,135 409,135 409,136 410,136 411,137 412,138 412,139 412,140 413,141 413,142 414,142 413,145 413,146 413,148 410,149 404,151 403,152 398,151 396,152 392,153 392,154 392,154 389,156 388,155 387,156 387,156 387,157 387,157 387,158 387,158 387,158 386,157 386,156 385,156 384,155 383,156 383,156 383,157 382,158 382,158 381,157 381,157 380,157 380,157 379,157 377,158 376,157 374,157 374,158 374,157 373,152 373,150 374,149 374,148 372,148 371,146 370,144 369,142 370,141 370,140 369,139 369,138 369,136 369,136 368,135 368,135 368,134 367,133 367,132 367,131 367,129 367,127 369,127 370,127 371,128 372,128 373,128 373,129 374,129 375,130 375,130 376,131 376,131 377,131 376,132 376,132 376,132 375,133 375,133 376,134 376,135 376,135 376,135 377,135 380,135 380,135 381,134 381,134 381,134 382,133 383,133 384,133 384,133 385,134 386,134 387,133 390,133 390,133 391,134 391,134 392,133 393,133 394,132 395,132 396,130 399,131 400,132 400,133 400,133 402,135 403,136 404,135 405,136 405,137 406,136 406,136 407,136 407,136 407,135 408,135 408,135 408,135 408,134 408,134Z"/>
+            <path data-d="viseu" d="M443,148 442,152 441,154 441,156 442,157 441,158 440,158 440,158 440,158 440,159 440,160 441,160 441,160 442,161 442,161 442,162 441,163 440,164 438,164 437,164 437,166 437,166 438,167 438,168 436,170 436,171 435,171 435,170 434,170 433,168 432,168 431,168 430,167 429,168 429,168 429,168 428,170 428,171 427,172 427,173 427,173 427,174 429,175 429,175 429,176 429,176 429,176 428,177 429,178 430,179 431,180 431,182 430,183 429,186 429,188 426,188 423,189 422,190 420,191 419,192 418,192 417,192 416,193 415,193 415,193 414,194 412,195 411,197 410,198 408,199 405,201 401,204 398,203 396,203 396,204 396,204 396,204 396,205 396,205 395,205 395,204 394,204 393,203 392,202 390,202 390,202 389,201 389,199 391,197 391,196 391,195 390,195 390,194 390,194 391,193 394,192 394,191 393,190 393,190 393,189 392,188 392,187 392,186 392,186 392,185 395,185 394,184 393,184 392,183 392,182 392,181 392,180 392,179 391,179 391,178 391,178 391,178 391,177 391,176 392,175 393,174 395,172 395,171 395,171 394,169 396,168 396,169 397,169 398,169 399,168 399,168 400,168 400,169 400,169 401,169 401,169 402,168 402,167 401,166 401,164 401,164 401,163 401,162 401,162 403,159 403,159 403,159 403,159 403,158 403,158 402,158 402,159 401,159 401,159 401,160 400,160 400,160 396,158 396,157 396,156 396,155 395,155 392,153 396,152 398,151 403,152 404,151 410,149 413,148 415,146 416,146 417,146 418,148 419,148 420,148 421,148 422,148 423,148 424,147 425,146 426,146 426,146 428,147 430,146 436,144 437,144 438,145 440,147 440,147 442,148Z"/>
+            <path data-d="vila-real" d="M448,98 448,98 448,99 448,100 448,102 448,103 448,103 449,105 450,106 450,107 450,107 450,108 449,108 449,108 449,109 447,112 446,117 446,119 446,120 446,121 446,121 446,122 446,122 447,122 446,123 446,123 446,123 445,123 445,123 444,124 444,125 443,126 443,127 442,127 442,127 440,128 440,132 440,133 441,134 441,135 442,135 441,136 440,137 440,138 440,138 440,138 439,139 439,140 438,141 438,141 438,142 439,142 438,142 438,142 437,142 437,143 437,143 436,144 430,146 428,147 426,146 426,146 425,146 424,147 423,148 422,148 421,148 420,148 419,148 418,148 417,146 416,146 415,146 413,148 413,146 413,145 414,142 413,142 413,141 412,140 412,139 412,138 411,137 410,136 409,136 409,135 409,135 409,133 409,132 409,132 409,131 409,131 409,131 409,131 410,130 410,129 410,129 411,128 410,128 411,126 411,125 411,125 412,125 412,125 413,125 413,124 413,124 414,123 415,123 417,120 417,119 416,117 416,117 415,117 414,118 413,118 412,118 410,118 410,118 409,117 408,117 407,117 408,114 408,113 408,112 408,112 408,112 406,111 406,111 405,111 405,111 404,111 404,111 403,111 403,111 403,111 402,111 401,111 402,110 403,109 403,109 403,107 404,107 404,105 404,104 405,104 405,103 405,103 405,103 406,101 407,100 408,99 408,99 409,99 410,99 411,98 411,97 411,96 412,96 412,98 413,100 414,100 415,99 415,99 415,99 416,98 417,99 420,98 422,97 422,97 424,98 425,99 427,99 427,101 427,102 428,102 428,102 430,102 431,102 431,101 432,101 432,100 432,100 432,99 433,99 433,100 434,100 435,100 435,101 436,102 436,103 437,103 438,101 439,101 439,101 441,101 442,101 446,99 447,98Z"/>
+          </g>
+          <g class="hotspots">
+            <g class="hotspot" data-project="alfena" transform="translate(390, 140)">
+              <circle r="7" class="hit"></circle>
+              <circle r="8"  class="ring"></circle>
+              <circle r="3"  class="dot"></circle>
+            </g>
+            <g class="hotspot" data-project="carreco" transform="translate(382, 101)">
+              <circle r="10" class="hit"></circle>
+              <circle r="8"  class="ring"></circle>
+              <circle r="3"  class="dot"></circle>
+            </g>
+            <g class="hotspot" data-project="barcelos" transform="translate(378, 122)">
+              <circle r="10" class="hit"></circle>
+              <circle r="8"  class="ring"></circle>
+              <circle r="3"  class="dot"></circle>
+            </g>
+            <g class="hotspot" data-project="gandra" transform="translate(373, 152)">
+              <circle r="9" class="hit"></circle>
+              <circle r="8"  class="ring"></circle>
+              <circle r="3"  class="dot"></circle>
+            </g>
+            <g class="hotspot" data-project="setubal" transform="translate(374, 335)">
+              <circle r="14" class="hit"></circle>
+              <circle r="8"  class="ring"></circle>
+              <circle r="3"  class="dot"></circle>
+            </g>
+            <g class="hotspot" data-project="benavente" transform="translate(383, 288)">
+              <circle r="14" class="hit"></circle>
+              <circle r="8"  class="ring"></circle>
+              <circle r="3"  class="dot"></circle>
+            </g>
+            <g class="hotspot" data-project="gaia" transform="translate(395, 155)">
+              <circle r="7" class="hit"></circle>
+              <circle r="8"  class="ring"></circle>
+              <circle r="3"  class="dot"></circle>
+            </g>
+            <g class="hotspot" data-project="vizela" transform="translate(400, 128)">
+              <circle r="7" class="hit"></circle>
+              <circle r="8"  class="ring"></circle>
+              <circle r="3"  class="dot"></circle>
+            </g>
+          </g>
+        </svg>
+
+        <div class="map-labels">
+          <div class="map-label" data-project="carreco" data-status="construcao" style="top: 4.2%; left: 67.1%;">
+            <span class="label-name">Viana do Castelo</span>
+            <span class="label-status">Em construção · 2026</span>
+          </div>
+          <div class="map-label" data-project="alfena" data-status="esgotado" style="top: 15.1%; left: 69.4%;">
+            <span class="label-name">Alfena</span>
+            <span class="label-status">Esgotado</span>
+          </div>
+          <div class="map-label" data-project="setubal" data-status="breve" style="top: 69.2%; left: 64.9%;">
+            <span class="label-name">Setúbal</span>
+            <span class="label-status">Em breve</span>
+          </div>
+          <div class="map-label" data-project="benavente" data-status="breve" style="top: 60.0%; left: 66.0%;">
+            <span class="label-name">Benavente</span>
+            <span class="label-status">Em breve</span>
+          </div>
+          <div class="map-label" data-project="barcelos" data-status="estudo" style="top: 10.1%; left: 66.0%;">
+            <span class="label-name">Barcelos</span>
+            <span class="label-status">Em estudo · 2027</span>
+          </div>
+          <div class="map-label" data-project="gandra" data-status="estudo" style="top: 15.0%; left: 71.0%;">
+            <span class="label-name">Gândra</span>
+            <span class="label-status">Em estudo · 2027</span>
+          </div>
+          <div class="map-label" data-project="gaia" data-status="estudo" style="top: 16.5%; left: 67.5%;">
+            <span class="label-name">Gaia</span>
+            <span class="label-status">Em estudo · 2028</span>
+          </div>
+          <div class="map-label" data-project="vizela" data-status="estudo" style="top: 11.7%; left: 72.2%;">
+            <span class="label-name">Vizela</span>
+            <span class="label-status">Em estudo · 2028</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side detail panel -->
+      <aside class="map-panel">
+        <article class="map-project active" data-project="carreco" data-status="construcao">
+          <span class="project-tag-overlay">Em construção · 2026</span>
+          <div class="map-project-img">
+            <img src="_assets/img/streetfront.jpg" alt="Empreendimento de Carreço, vista de rua" />
+          </div>
+          <h3>Viana do Castelo · Carreço</h3>
+          <p>Trinta e sete moradias unifamiliares numa parcela a quinze minutos da praia. V2 e V3 com pátio privado, jardim e parqueamento.</p>
+          <dl class="project-meta">
+            <dt>Localização</dt><dd>Lugar de Montedor, Carreço</dd>
+            <dt>Total</dt><dd>37 moradias</dd>
+            <dt>Tipologias</dt><dd>V2-A · V2-B · V3</dd>
+          </dl>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="construcao">Falar sobre Carreço →</a>
+        </article>
+        <article class="map-project" data-project="alfena" data-status="esgotado">
+          <span class="project-tag-overlay">Esgotado</span>
+          <div class="map-project-img">
+            <img src="_assets/img/alfena_villa.jpg" alt="Origem Villas Alfena, vista exterior" />
+          </div>
+          <h3>Alfena · Origem Villas</h3>
+          <p>Setenta e nove moradias V2, V3 e V4 a quinze minutos do Porto. Condomínio com Smart Home, comodidades comuns (ginásio, piscina, espaço multifunções) e jardins privativos. Impressão 3D, sistema verticalmente integrado.</p>
+          <dl class="project-meta">
+            <dt>Localização</dt><dd>Rua das Passarias, Alfena</dd>
+            <dt>Total</dt><dd>79 moradias</dd>
+            <dt>Tipologias</dt><dd>V2-A · V2-B · V3 · V4</dd>
+          </dl>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="geral">Pedir retrospectiva →</a>
+        </article>
+        <article class="map-project" data-project="setubal" data-status="breve">
+          <span class="project-tag-overlay ghost">Em breve</span>
+          <div class="map-project-img placeholder" role="img" aria-label="Empreendimento em pipeline · imagem genérica inHabitus"></div>
+          <h3>Setúbal</h3>
+          <p>Próximo empreendimento da pipeline inHabitus. Lançamento comercial em breve.</p>
+          <dl class="project-meta">
+            <dt>Localização</dt><dd>A confirmar · Península de Setúbal</dd>
+            <dt>Tipologias</dt><dd>V2 · V3</dd>
+          </dl>
+          <p class="map-project-note">Inscreva-se para receber detalhes assim que o lançamento for anunciado.</p>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+        </article>
+        <article class="map-project" data-project="benavente" data-status="breve">
+          <span class="project-tag-overlay ghost">Em breve</span>
+          <div class="map-project-img placeholder" role="img" aria-label="Empreendimento em pipeline · imagem genérica inHabitus"></div>
+          <h3>Benavente</h3>
+          <p>Próximo empreendimento da pipeline inHabitus. Lançamento comercial em breve.</p>
+          <dl class="project-meta">
+            <dt>Localização</dt><dd>A confirmar · Benavente</dd>
+            <dt>Tipologias</dt><dd>V2 · V3</dd>
+          </dl>
+          <p class="map-project-note">Inscreva-se para receber detalhes assim que o lançamento for anunciado.</p>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+        </article>
+        <article class="map-project" data-project="barcelos" data-status="estudo">
+          <span class="project-tag-overlay ghost">Em estudo · 2027</span>
+          <div class="map-project-img placeholder" role="img" aria-label="Empreendimento em pipeline · imagem genérica inHabitus"></div>
+          <h3>Barcelos</h3>
+          <p>Empreendimento em fase de aquisição de terreno e estudo de viabilidade. Mesmo sistema construtivo inHabitus.</p>
+          <dl class="project-meta">
+            <dt>Localização</dt><dd>A confirmar · Barcelos</dd>
+            <dt>Tipologias</dt><dd>V2 · V3</dd>
+            <dt>Início</dt><dd>2027</dd>
+          </dl>
+          <p class="map-project-note">Cronograma e tipologias finais a confirmar após aprovação de PIP.</p>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+        </article>
+        <article class="map-project" data-project="gandra" data-status="estudo">
+          <span class="project-tag-overlay ghost">Em estudo · 2027</span>
+          <div class="map-project-img placeholder" role="img" aria-label="Empreendimento em pipeline · imagem genérica inHabitus"></div>
+          <h3>Gândra</h3>
+          <p>Empreendimento em fase de aquisição de terreno e estudo de viabilidade. Mesmo sistema construtivo inHabitus.</p>
+          <dl class="project-meta">
+            <dt>Localização</dt><dd>A confirmar · Gândra</dd>
+            <dt>Tipologias</dt><dd>V2 · V3</dd>
+            <dt>Início</dt><dd>2027</dd>
+          </dl>
+          <p class="map-project-note">Cronograma e tipologias finais a confirmar após aprovação de PIP.</p>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+        </article>
+        <article class="map-project" data-project="gaia" data-status="estudo">
+          <span class="project-tag-overlay ghost">Em estudo · 2028</span>
+          <div class="map-project-img placeholder" role="img" aria-label="Empreendimento em pipeline · imagem genérica inHabitus"></div>
+          <h3>Gaia</h3>
+          <p>Empreendimento em fase de aquisição de terreno e estudo de viabilidade. Mesmo sistema construtivo inHabitus.</p>
+          <dl class="project-meta">
+            <dt>Localização</dt><dd>A confirmar · Gaia</dd>
+            <dt>Tipologias</dt><dd>V2 · V3</dd>
+            <dt>Início</dt><dd>2028</dd>
+          </dl>
+          <p class="map-project-note">Cronograma e tipologias finais a confirmar após aprovação de PIP.</p>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+        </article>
+        <article class="map-project" data-project="vizela" data-status="estudo">
+          <span class="project-tag-overlay ghost">Em estudo · 2028</span>
+          <div class="map-project-img placeholder" role="img" aria-label="Empreendimento em pipeline · imagem genérica inHabitus"></div>
+          <h3>Vizela</h3>
+          <p>Empreendimento em fase de aquisição de terreno e estudo de viabilidade. Mesmo sistema construtivo inHabitus.</p>
+          <dl class="project-meta">
+            <dt>Localização</dt><dd>A confirmar · Vizela</dd>
+            <dt>Tipologias</dt><dd>V2 · V3</dd>
+            <dt>Início</dt><dd>2028</dd>
+          </dl>
+          <p class="map-project-note">Cronograma e tipologias finais a confirmar após aprovação de PIP.</p>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+        </article>
+      </aside>
+    </div>
+
+  </div>
+</section>
+
 
 <!-- ============================== S2 MMC ============================== -->
 <section class="section mmc" id="tecnologia">
@@ -1692,7 +2975,7 @@
         <h2 class="section-title">Métodos modernos<br/>de construção.</h2>
       </div>
       <p class="section-lede">
-        Quatro métodos integrados num só sistema construtivo: <strong>impressão 3D in-situ</strong>, <strong>pré-impressão de blocos</strong>, <strong>estrutura em light steel</strong> e <strong>construção modular</strong>. Cada um resolve uma parte do problema — desperdício, prazo, custo, qualidade — e em conjunto definem a forma como a INHabitus constrói.
+        Quatro métodos integrados num só sistema construtivo: <strong>impressão 3D in-situ</strong>, <strong>betão pré-fabricado</strong>, <strong>light steel framing</strong> e <strong>construção modular</strong>. Cada um resolve uma parte do problema: desperdício, prazo, custo, qualidade. Em conjunto, definem a forma como a inHabitus constrói.
       </p>
     </div>
   </div>
@@ -1702,21 +2985,21 @@
       <button class="mmc-card active blue" data-target="t1">
         <div class="mmc-num"><span>01 / 04</span><span class="badge"></span></div>
         <span class="mmc-tag">Sistema-base</span>
-        <h3>Construção 3D</h3>
+        <h3>Impressão 3D</h3>
         <p class="tease">Impressão por camadas in-situ. Material avançado guiado por modelo digital de alta precisão.</p>
         <span class="more">Ver detalhe</span>
       </button>
       <button class="mmc-card lime" data-target="t2">
         <div class="mmc-num"><span>02 / 04</span><span class="badge"></span></div>
-        <span class="mmc-tag">Pré-impressão</span>
-        <h3>Pré-impressão de blocos</h3>
-        <p class="tease">Blocos impressos em fábrica, com geometria continuada do sistema 3D, e montados em obra.</p>
+        <span class="mmc-tag">Pré-fabricado</span>
+        <h3>Betão pré-fabricado</h3>
+        <p class="tease">Elementos estruturais e de envolvente em betão produzidos em fábrica, com tolerâncias industriais e montagem rápida em obra.</p>
         <span class="more">Ver detalhe</span>
       </button>
       <button class="mmc-card peach" data-target="t3">
         <div class="mmc-num"><span>03 / 04</span><span class="badge"></span></div>
         <span class="mmc-tag">Estrutura</span>
-        <h3>Light Steel</h3>
+        <h3>Light Steel Framing</h3>
         <p class="tease">Estrutura metálica leve, dimensionada por cálculo, integrada ao sistema impresso para vãos e pisos elevados.</p>
         <span class="more">Ver detalhe</span>
       </button>
@@ -1729,12 +3012,14 @@
       </button>
     </div>
 
+    <div class="mmc-details-stack">
     <div class="mmc-detail open" id="t1">
       <div class="mmc-detail-inner">
         <div>
-          <div class="label">01 — Construção 3D</div>
-          <h4>Construção com propósito.<br/>Inovação comprovada na construção.</h4>
+          <div class="label">01 · Impressão 3D</div>
+          <h4>Construção como produto.<br/>Método comprovado em obra.</h4>
           <p>Aplicação por camadas de material avançado, guiada por um modelo digital de alta precisão. O resultado: paredes contínuas, geometria livre, e a redução drástica de desperdício, prazo e energia.</p>
+          <a class="btn btn-outline mmc-detail-cta" href="#projetos">Ver projetos →</a>
         </div>
         <div>
           <dl class="mmc-spec">
@@ -1755,16 +3040,16 @@
     <div class="mmc-detail" id="t2">
       <div class="mmc-detail-inner">
         <div>
-          <div class="label">02 — Pré-impressão de blocos</div>
-          <h4>Blocos impressos em fábrica.<br/>Montagem rápida em obra.</h4>
-          <p>Para tipologias e elementos repetidos, imprimimos blocos modulares fora da obra. A geometria continua do sistema 3D — paredes contínuas, sem pontes térmicas — mas o ritmo de obra acelera. Ideal para empreendimentos de média e larga escala.</p>
+          <div class="label">02 · Betão pré-fabricado</div>
+          <h4>Betão produzido em fábrica.<br/>Montagem rápida em obra.</h4>
+          <p>Elementos estruturais e de envolvente betonados em ambiente controlado, com armaduras e acabamentos integrados de origem. Em obra, montagem com tolerâncias industriais e ciclos curtos. Ideal para empreendimentos de média e larga escala.</p>
         </div>
         <div>
           <dl class="mmc-spec">
-            <dt>Produção</dt><dd>Linha de impressão controlada</dd>
-            <dt>Geometria</dt><dd>Mesma família que o sistema in-situ</dd>
-            <dt>Aplicação</dt><dd>Empilhamento e selagem em obra</dd>
-            <dt>Ganho</dt><dd>Velocidade × repetibilidade</dd>
+            <dt>Produção</dt><dd>Fábrica certificada, cura controlada</dd>
+            <dt>Geometria</dt><dd>Família dimensional do sistema construtivo</dd>
+            <dt>Aplicação</dt><dd>Içamento e selagem em obra</dd>
+            <dt>Ganho</dt><dd>Velocidade × repetibilidade × durabilidade</dd>
             <dt>Logística</dt><dd>Just-in-time, rastreabilidade total</dd>
           </dl>
         </div>
@@ -1777,9 +3062,9 @@
     <div class="mmc-detail" id="t3">
       <div class="mmc-detail-inner">
         <div>
-          <div class="label">03 — Light Steel</div>
+          <div class="label">03 · Light Steel Framing</div>
           <h4>Estrutura leve.<br/>Vãos generosos, pisos elevados.</h4>
-          <p>Onde o sistema impresso pede reforço — vãos amplos, pisos suspensos, coberturas — entra a estrutura em light steel. Perfis metálicos calibrados, dimensionados por cálculo, integrados de fábrica ao sistema construtivo.</p>
+          <p>Onde o sistema impresso pede reforço (vãos amplos, pisos suspensos, coberturas), entra o light steel framing. Perfis metálicos calibrados, dimensionados por cálculo, integrados de fábrica ao sistema construtivo.</p>
         </div>
         <div>
           <dl class="mmc-spec">
@@ -1799,7 +3084,7 @@
     <div class="mmc-detail" id="t4">
       <div class="mmc-detail-inner">
         <div>
-          <div class="label">04 — Construção modular</div>
+          <div class="label">04 · Construção modular</div>
           <h4>Componentes em fábrica.<br/>Montagem em obra.</h4>
           <p>Painéis, núcleos técnicos e elementos de cozinha e casa-de-banho produzidos fora da obra, em ambiente controlado. Em obra, montagem com tolerâncias industriais e zero retrabalho. O sistema 3D fica responsável pela envolvente; o módulo entrega o interior.</p>
         </div>
@@ -1817,16 +3102,18 @@
         </div>
       </div>
     </div>
+    </div><!-- /.mmc-details-stack -->
   </div>
 </section>
 
-<!-- ============================== S3 MODELO DE NEGÓCIO ============================== -->
+<!-- ============================== S3 CADEIA DE VALOR ============================== -->
 <section class="section" id="modelo">
   <div class="wrap">
     <div class="grid-2 reveal" style="margin-bottom: 80px;">
       <div class="model-text">
-        <span class="section-eyebrow">Modelo de negócio</span>
+        <span class="section-eyebrow">Cadeia de valor</span>
         <h2 class="section-title">Padronização<br/>em escala.</h2>
+        <a class="btn btn-primary cta-to-form model-cta" href="#contacto" data-form-topic="geral">Curioso? Contacte-nos!</a>
         <p class="section-lede">
           O mesmo sistema construtivo, replicável. As mesmas tipologias, com variações controladas. O resultado: redução real de custo unitário, prazo previsível e qualidade auditável em cada unidade entregue.
         </p>
@@ -1850,7 +3137,7 @@
             <ul>
               <li>Catálogo fechado de variações de tipologia</li>
               <li>Acabamentos pré-aprovados em três níveis</li>
-              <li>Lista de upgrades opcionais documentada (solar, EV, vidros privacy)</li>
+              <li>Lista de opções documentada (solar, EV, vidros de privacidade)</li>
             </ul>
           </div>
         </details>
@@ -1882,7 +3169,7 @@
             <span class="arrow">→</span>
           </summary>
           <div class="model-pillar-detail">
-            <p>Quando o sistema não muda, o custo deixa de oscilar. Cada projeto é um derivativo do anterior — preçário transparente, sem custos-surpresa em fim de obra.</p>
+            <p>Quando o sistema não muda, o custo deixa de oscilar. Cada projeto é um derivativo do anterior. Preçário transparente, sem custos-surpresa em fim de obra.</p>
             <ul>
               <li>Orçamentação por tipologia, não por imprevisto</li>
               <li>Margens de obra contratualmente fechadas</li>
@@ -1900,7 +3187,7 @@
             <span class="arrow">→</span>
           </summary>
           <div class="model-pillar-detail">
-            <p>O método nasceu para funcionar em mais do que um terreno. Carreço é o primeiro caso real — Norte, Centro e Sul seguem-se, com adaptação a regulamentos locais e zero compromisso no sistema construtivo.</p>
+            <p>O método nasceu para funcionar em mais do que um terreno. Carreço é o primeiro caso real. Norte, Centro e Sul seguem-se, com adaptação a regulamentos locais e zero compromisso no sistema construtivo.</p>
             <ul>
               <li>Pipeline em 3 geografias confirmadas (2027–2028)</li>
               <li>Adaptação modular a topografia, clima e contexto urbano</li>
@@ -1919,10 +3206,10 @@
     <div class="process-headline reveal">
       <div>
         <span class="section-eyebrow lime">Processo</span>
-        <h2 class="section-title">Da terra à chave.<br/>Doze meses.</h2>
+        <h2 class="section-title">Um processo,<br/>cinco etapas.</h2>
       </div>
       <div class="process-quote">
-        Cinco etapas, <em>uma equipa</em>, sem fricção. Do estudo do terreno à pós-venda, tudo dentro da INHabitus.
+        Da leitura do terreno à vida em comunidade. <em>Uma equipa, um sistema, sem fricção.</em> Do projeto à chave, sob uma só responsabilidade.
       </div>
     </div>
 
@@ -1941,8 +3228,8 @@
       </button>
       <button class="stage" data-stage="s3">
         <span class="stage-num">03 / 05</span>
-        <h4>Manufatura</h4>
-        <p>Construção 3D em obra + módulos pré-fabricados em fábrica.</p>
+        <h4>Desenvolvimento</h4>
+        <p>Impressão 3D em obra e elementos pré-fabricados em fábrica.</p>
         <span class="stage-cta">Ver detalhe →</span>
       </button>
       <button class="stage" data-stage="s4">
@@ -1953,8 +3240,8 @@
       </button>
       <button class="stage" data-stage="s5">
         <span class="stage-num">05 / 05</span>
-        <h4>Pós-venda</h4>
-        <p>Manutenção e gestão de condomínio. Continuamos presentes depois da chave.</p>
+        <h4>Comunidade</h4>
+        <p>Vida em condomínio, espaços partilhados e manutenção do sistema, sem terceiros.</p>
         <span class="stage-cta">Ver detalhe →</span>
       </button>
     </div>
@@ -2011,12 +3298,12 @@
     </template>
     <template id="stage-data-s3">
       <span class="stage-detail-num">03 / 05</span>
-      <h3 class="stage-detail-title">Manufatura</h3>
-      <p class="stage-detail-lede">Construção 3D em obra para envolvente. Componentes pré-fabricados em fábrica para o resto. Tolerâncias industriais, prazo controlado.</p>
+      <h3 class="stage-detail-title">Desenvolvimento</h3>
+      <p class="stage-detail-lede">Impressão 3D em obra para a envolvente. Elementos pré-fabricados em fábrica para o resto. Tolerâncias industriais, prazo controlado.</p>
       <dl>
         <dt>Impressão 3D</dt><dd>Paredes contínuas em material avançado, geometria livre.</dd>
         <dt>Pré-fabricação</dt><dd>Painéis, núcleos técnicos e cozinhas em ambiente controlado.</dd>
-        <dt>Tolerância</dt><dd>±2 mm — montagem em obra sem ajustes.</dd>
+        <dt>Tolerância</dt><dd>±2 mm. Montagem em obra sem ajustes.</dd>
         <dt>Logística</dt><dd>Just-in-time, rastreabilidade total de cada componente.</dd>
       </dl>
       <span class="stat-num">5<sub>m</sub></span>
@@ -2027,9 +3314,9 @@
       <h3 class="stage-detail-title">Entrega</h3>
       <p class="stage-detail-lede">Acabamentos, comissionamento de Smart Home, vistoria partilhada com o cliente. Chave-na-mão, sem caixa de surpresas.</p>
       <dl>
-        <dt>Acabamentos</dt><dd>Personalizáveis, executados em obra com check-list por unidade.</dd>
+        <dt>Acabamentos</dt><dd>Personalizáveis, executados em obra com lista de verificação por unidade.</dd>
         <dt>Smart Home</dt><dd>Configurado, testado e demonstrado ao cliente antes da entrega.</dd>
-        <dt>Vistoria</dt><dd>Check-list digital partilhada — o cliente assina o que aceita.</dd>
+        <dt>Vistoria</dt><dd>Lista de verificação digital partilhada. O cliente assina o que aceita.</dd>
         <dt>Garantia</dt><dd>Documentação técnica completa de cada sistema da casa.</dd>
       </dl>
       <span class="stat-num">2<sub>m</sub></span>
@@ -2037,8 +3324,8 @@
     </template>
     <template id="stage-data-s5">
       <span class="stage-detail-num">05 / 05</span>
-      <h3 class="stage-detail-title">Pós-venda</h3>
-      <p class="stage-detail-lede">A INHabitus permanece no projeto depois da chave. Quem construiu o sistema é quem o mantém — sem terceiros.</p>
+      <h3 class="stage-detail-title">Comunidade</h3>
+      <p class="stage-detail-lede">A inHabitus permanece no projeto depois da chave. Vida em condomínio, espaços partilhados e manutenção do sistema construtivo, pela mesma equipa que o ergueu.</p>
       <dl>
         <dt>Condomínio</dt><dd>Gestão de áreas comuns, manutenção corrente do empreendimento.</dd>
         <dt>Sistema construtivo</dt><dd>Manutenção técnica da envolvente 3D, sem subcontratação.</dd>
@@ -2062,9 +3349,9 @@
       <div class="sustain-content">
         <div class="sustain-intro">
           <span class="section-eyebrow">Sustentabilidade</span>
-          <h2 class="section-title">Construir bem<br/>é construir menos.</h2>
+          <h2 class="section-title">Construir melhor,<br/>com menos pegada.</h2>
           <p class="section-lede">
-            Construir de forma responsável é também construir de forma inteligente. Os ganhos não são teóricos — estão no método.
+            Construir de forma responsável é também construir de forma inteligente. Menos resíduo, menos energia, menos prazo, sem comprometer escala nem qualidade. Os ganhos não são teóricos: estão no método.
           </p>
         </div>
 
@@ -2098,20 +3385,20 @@
           <div class="flip-card sustain-stat peach" tabindex="0">
             <div class="flip-card-inner">
               <div class="flip-card-front">
-                <div class="num peach">50<sup>%</sup></div>
-                <p>Redução do consumo de energia em obra e operação.</p>
+                <div class="num peach">80<sup>%</sup></div>
+                <p>Redução de risco em obra face à construção tradicional.</p>
                 <span class="flip-hint">Virar →</span>
               </div>
               <div class="flip-card-back">
-                <h6>Em obra e em uso</h6>
-                <p>Equipamento elétrico em fábrica e em obra. Em uso: envolvente contínua, isolamento de alto desempenho, bomba de calor e painéis solares como upgrade.</p>
+                <h6>Como medimos</h6>
+                <p>Menos operações manuais e menos tempo em obra: impressão 3D e elementos pré-fabricados reduzem o trabalho em altura, a movimentação de cargas e a exposição a acidentes. Aferido por registo de sinistralidade face à obra tradicional.</p>
               </div>
             </div>
           </div>
           <div class="flip-card sustain-stat" tabindex="0">
             <div class="flip-card-inner">
               <div class="flip-card-front">
-                <div class="num">70<sup>%</sup></div>
+                <div class="num">50<sup>%</sup></div>
                 <p>Redução do prazo de entrega ao cliente final.</p>
                 <span class="flip-hint">Virar →</span>
               </div>
@@ -2126,18 +3413,18 @@
         <div class="sustain-pillars">
           <div class="sustain-pillar">
             <div class="icon"></div>
-            <h5>Eficiência Inteligente</h5>
+            <h5>Eficiência por desenho</h5>
             <p>Cada decisão construtiva mede-se em desperdício, energia e tempo.</p>
           </div>
           <div class="sustain-pillar">
             <div class="icon"></div>
-            <h5>Inovação Segura</h5>
-            <p>Tecnologia comprovada em obra. Inovação não é experiência sobre o cliente.</p>
+            <h5>Tecnologia comprovada em obra</h5>
+            <p>Inovação não é experiência sobre o cliente. Cada método já passou por ciclo completo de produção e entrega.</p>
           </div>
           <div class="sustain-pillar">
             <div class="icon"></div>
-            <h5>Sustentabilidade Integrada</h5>
-            <p>Coberturas verdes, materiais selecionados, painéis solares como upgrade.</p>
+            <h5>Sustentabilidade material</h5>
+            <p>Coberturas verdes, materiais selecionados, painéis solares como opção.</p>
           </div>
         </div>
       </div>
@@ -2150,21 +3437,20 @@
   <div class="wrap">
     <div class="community-grid reveal">
       <div class="community-img">
-        <span class="community-img-tag">Pós-entrega</span>
         <img src="_assets/img/outdoor_seating.jpg" alt="Espaço exterior partilhado, mobiliário de jardim" />
       </div>
       <div>
         <span class="section-eyebrow peach">Comunidade</span>
         <h2 class="section-title">Uma comunidade<br/>que continua.</h2>
         <p class="section-lede">
-          A INHabitus permanece no projeto depois da chave. Gestão de condomínio, manutenção do sistema construtivo, e os espaços comuns que tornam o empreendimento mais do que um conjunto de moradias.
+          A inHabitus permanece no projeto depois da chave. Gestão de condomínio, manutenção do sistema construtivo, e os espaços comuns que tornam o empreendimento mais do que um conjunto de moradias.
         </p>
 
         <ul class="community-list">
           <li>
             <div>
               <h5>Gestão de condomínio</h5>
-              <p>Portaria com presença diária, vídeo-vigilância 24h em áreas comuns, smart lockers para entregas.</p>
+              <p>Portaria com presença diária, vídeo-vigilância 24h em áreas comuns, cacifos inteligentes para entregas.</p>
             </div>
           </li>
           <li>
@@ -2192,335 +3478,232 @@
 </section>
 
 <!-- ============================== S7 PROJETOS ============================== -->
-<section class="section projects" id="projetos">
-  <div class="wrap">
-    <div class="projects-header reveal">
-      <div>
-        <span class="section-eyebrow peach">Projetos</span>
-        <h2 class="section-title">Onde estamos<br/>a construir.</h2>
-      </div>
-      <p class="section-lede">
-        Carreço é o primeiro caso. Norte, Centro e Sul seguem-se. Clique nos pontos do mapa para ver cada projeto em detalhe.
-      </p>
-    </div>
-
-    <!-- Map + Side panel -->
-    <div class="map-stage reveal">
-      <!-- Portugal map (SVG, recognizable outline) -->
-      <div class="map-canvas">
-        <span class="map-eyebrow">Portugal · Pipeline 2026 — 2028</span>
-        <svg viewBox="0 0 240 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="pt-map" preserveAspectRatio="xMidYMid meet">
-          <!-- Subtle parallel/meridian grid -->
-          <g class="grid" stroke-width="0.5">
-            <line x1="0" y1="100" x2="240" y2="100"/>
-            <line x1="0" y1="200" x2="240" y2="200"/>
-            <line x1="0" y1="300" x2="240" y2="300"/>
-            <line x1="0" y1="400" x2="240" y2="400"/>
-            <line x1="0" y1="500" x2="240" y2="500"/>
-            <line x1="60"  y1="0" x2="60"  y2="600"/>
-            <line x1="120" y1="0" x2="120" y2="600"/>
-            <line x1="180" y1="0" x2="180" y2="600"/>
-          </g>
-
-          <!-- Mainland Portugal silhouette (stylised but recognisable) -->
-          <path class="pt-shape" d="
-            M 78 30
-            L 95 24
-            L 130 22
-            L 162 30
-            L 178 48
-            L 184 78
-            L 182 110
-            L 192 138
-            L 198 172
-            L 192 208
-            L 196 236
-            L 196 268
-            L 188 298
-            L 184 332
-            L 184 372
-            L 188 410
-            L 196 442
-            L 200 472
-            L 200 500
-            L 196 522
-            L 178 538
-            L 152 548
-            L 122 552
-            L 96 548
-            L 74 540
-            L 56 524
-            L 46 500
-            L 42 470
-            L 46 432
-            L 42 396
-            L 36 360
-            L 32 320
-            L 28 282
-            L 30 250
-            L 36 218
-            L 32 188
-            L 30 156
-            L 36 122
-            L 46 88
-            L 58 60
-            L 70 42
-            Z" />
-          <!-- Madeira + Açores outline mark (decorative) -->
-          <g class="pt-islands">
-            <circle cx="22" cy="488" r="3"/>
-            <circle cx="14" cy="498" r="2"/>
-            <circle cx="20" cy="450" r="2"/>
-          </g>
-          <!-- Tejo river -->
-          <path class="pt-river" d="M 40 350 C 80 358, 120 348, 160 360 C 175 365, 184 360, 196 358" />
-
-          <!-- Hotspots — coordinates align to silhouette -->
-          <g class="hotspots">
-            <g class="hotspot active" data-project="carreco" transform="translate(95, 96)">
-              <circle r="32" class="ring-outer"></circle>
-              <circle r="20" class="ring"></circle>
-              <circle r="9"  class="dot"></circle>
-            </g>
-            <g class="hotspot" data-project="norte" transform="translate(140, 70)">
-              <circle r="28" class="ring-outer"></circle>
-              <circle r="18" class="ring"></circle>
-              <circle r="8"  class="dot"></circle>
-            </g>
-            <g class="hotspot" data-project="centro" transform="translate(120, 280)">
-              <circle r="28" class="ring-outer"></circle>
-              <circle r="18" class="ring"></circle>
-              <circle r="8"  class="dot"></circle>
-            </g>
-            <g class="hotspot" data-project="sul" transform="translate(140, 478)">
-              <circle r="28" class="ring-outer"></circle>
-              <circle r="18" class="ring"></circle>
-              <circle r="8"  class="dot"></circle>
-            </g>
-          </g>
-
-          <!-- Cardinal markers -->
-          <g class="cardinal">
-            <text x="120" y="14" text-anchor="middle">N</text>
-            <text x="120" y="586" text-anchor="middle">S</text>
-            <text x="6"   y="304" text-anchor="start">W</text>
-            <text x="234" y="304" text-anchor="end">E</text>
-          </g>
-        </svg>
-
-        <!-- Map labels — positioned alongside the SVG dots -->
-        <div class="map-labels">
-          <div class="map-label active" data-project="carreco" style="top: 14%; left: 56%;">
-            <span class="label-coord">41,72° N</span>
-            <span class="label-name">Carreço · Viana</span>
-            <span class="label-status">Em construção · 2026</span>
-          </div>
-          <div class="map-label" data-project="norte" style="top: 8%; left: 68%;">
-            <span class="label-coord">41,55° N</span>
-            <span class="label-name">Norte</span>
-            <span class="label-status">Em estudo · 2027</span>
-          </div>
-          <div class="map-label" data-project="centro" style="top: 45%; left: 60%;">
-            <span class="label-coord">39,48° N</span>
-            <span class="label-name">Centro</span>
-            <span class="label-status">Em estudo · 2027</span>
-          </div>
-          <div class="map-label" data-project="sul" style="top: 78%; left: 65%;">
-            <span class="label-coord">37,01° N</span>
-            <span class="label-name">Sul</span>
-            <span class="label-status">Em estudo · 2028</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Side detail panel (Sensara-style) -->
-      <aside class="map-panel">
-        <!-- Carreço -->
-        <article class="map-project active" data-project="carreco">
-          <span class="project-tag-overlay">Em construção · 2026</span>
-          <div class="map-project-img">
-            <img src="_assets/img/streetfront.jpg" alt="Empreendimento de Carreço, vista de rua" />
-          </div>
-          <h3>Carreço · Viana</h3>
-          <p>Trinta e sete moradias unifamiliares numa parcela de quinze minutos da praia. V2 e V3 com pátio privado, jardim e parqueamento.</p>
-          <dl class="project-meta">
-            <dt>Localização</dt><dd>Lugar de Montedor, Carreço</dd>
-            <dt>Total</dt><dd>37 moradias</dd>
-            <dt>Tipologias</dt><dd>V2-A · V2-B · V3</dd>
-            <dt>Distância</dt><dd>4 min praia · 15 min Viana</dd>
-          </dl>
-          <div class="typology-strip">
-            <div class="typology-mini">
-              <span class="ttag">V2 · A</span>
-              <span class="area">179,50<sub>m²</sub></span>
-              <span class="units">16 unidades</span>
-            </div>
-            <div class="typology-mini">
-              <span class="ttag">V2 · B</span>
-              <span class="area">226,70<sub>m²</sub></span>
-              <span class="units">8 unidades</span>
-            </div>
-            <div class="typology-mini">
-              <span class="ttag">V3</span>
-              <span class="area">267,25<sub>m²</sub></span>
-              <span class="units">13 unidades</span>
-            </div>
-          </div>
-          <a class="btn btn-outline" href="#">Ver projeto completo →</a>
-        </article>
-
-        <!-- Norte -->
-        <article class="map-project" data-project="norte">
-          <span class="project-tag-overlay ghost">Em estudo · 2027</span>
-          <div class="map-project-img placeholder">
-            <span class="placeholder-mark">N</span>
-          </div>
-          <h3>Norte</h3>
-          <p>Segundo empreendimento INHabitus, em fase de aquisição de terreno. Mesmo sistema construtivo, adaptado a contexto rural costeiro.</p>
-          <dl class="project-meta">
-            <dt>Localização</dt><dd>A confirmar · litoral norte</dd>
-            <dt>Total</dt><dd>~25–30 moradias</dd>
-            <dt>Tipologias</dt><dd>V2 · V3</dd>
-            <dt>Início</dt><dd>2027</dd>
-          </dl>
-          <p class="map-project-note">Cronograma e tipologias finais a confirmar após aprovação de PIP.</p>
-          <a class="btn btn-outline" href="#">Receber novidades →</a>
-        </article>
-
-        <!-- Centro -->
-        <article class="map-project" data-project="centro">
-          <span class="project-tag-overlay ghost">Em estudo · 2027</span>
-          <div class="map-project-img placeholder">
-            <span class="placeholder-mark">C</span>
-          </div>
-          <h3>Centro</h3>
-          <p>Terceiro empreendimento previsto na região centro. Avaliação em curso de duas parcelas — uma de carácter urbano, outra periurbana.</p>
-          <dl class="project-meta">
-            <dt>Localização</dt><dd>A confirmar · região centro</dd>
-            <dt>Total</dt><dd>~30–40 moradias</dd>
-            <dt>Tipologias</dt><dd>V2 · V3</dd>
-            <dt>Início</dt><dd>2027</dd>
-          </dl>
-          <p class="map-project-note">Cronograma e tipologias finais a confirmar após aprovação de PIP.</p>
-          <a class="btn btn-outline" href="#">Receber novidades →</a>
-        </article>
-
-        <!-- Sul -->
-        <article class="map-project" data-project="sul">
-          <span class="project-tag-overlay ghost">Em estudo · 2028</span>
-          <div class="map-project-img placeholder">
-            <span class="placeholder-mark">S</span>
-          </div>
-          <h3>Sul</h3>
-          <p>Empreendimento na região sul. Adaptação climática do sistema construtivo — coberturas verdes e sombreamento solar reforçados.</p>
-          <dl class="project-meta">
-            <dt>Localização</dt><dd>A confirmar · Algarve</dd>
-            <dt>Total</dt><dd>~35–45 moradias</dd>
-            <dt>Tipologias</dt><dd>V2 · V3</dd>
-            <dt>Início</dt><dd>2028</dd>
-          </dl>
-          <p class="map-project-note">Cronograma e tipologias finais a confirmar após aprovação de PIP.</p>
-          <a class="btn btn-outline" href="#">Receber novidades →</a>
-        </article>
-      </aside>
-    </div>
-
-    <!-- Bottom tab bar (Sensara-style) -->
-    <div class="project-tabs reveal">
-      <button class="project-tab active" data-project="carreco">
-        <span class="tab-eyebrow">Em construção</span>
-        <span class="tab-name">Carreço · Viana</span>
-        <span class="tab-meta">2026 · 37 moradias</span>
-      </button>
-      <button class="project-tab" data-project="norte">
-        <span class="tab-eyebrow">Em estudo</span>
-        <span class="tab-name">Norte</span>
-        <span class="tab-meta">2027 · ~25–30 moradias</span>
-      </button>
-      <button class="project-tab" data-project="centro">
-        <span class="tab-eyebrow">Em estudo</span>
-        <span class="tab-name">Centro</span>
-        <span class="tab-meta">2027 · ~30–40 moradias</span>
-      </button>
-      <button class="project-tab" data-project="sul">
-        <span class="tab-eyebrow">Em estudo</span>
-        <span class="tab-name">Sul</span>
-        <span class="tab-meta">2028 · ~35–45 moradias</span>
-      </button>
-    </div>
-  </div>
-</section>
-
-<!-- (legacy ghost markup removed; replaced by Portugal map UI in S7) -->
 
 <!-- ============================== S8 FOOTER ============================== -->
 <footer class="footer" id="contacto">
   <div class="wrap">
-    <div class="footer-cta">
-      <h2>Construir consigo<br/>começa por uma conversa.</h2>
-      <div class="footer-cta-actions">
-        <a class="btn btn-primary" href="#">Agendar visita</a>
-        <a class="btn btn-outline" href="#">Descarregar brochura</a>
-        <a class="btn btn-outline" href="#">Configurar moradia</a>
-      </div>
-    </div>
+    <div class="footer-grid">
 
-    <div class="footer-cols">
-      <div>
-        <h6>INHabitus<sup>®</sup></h6>
-        <p class="footer-blurb">Métodos modernos de construção. Verticalmente integrados, da terra à chave.</p>
-        <p class="footer-blurb" style="font-family: var(--font-mono); font-size:12px; letter-spacing:0.06em;">
-          sales@inhabitus.com<br/>
-          +351 928 411 855
-        </p>
-      </div>
-      <div>
-        <h6>Empresa</h6>
-        <ul>
-          <li><a href="#">Sobre nós</a></li>
-          <li><a href="#">Manifesto</a></li>
-          <li><a href="#">Imprensa</a></li>
-          <li><a href="#">Carreiras</a></li>
-        </ul>
-      </div>
-      <div>
-        <h6>Tecnologia</h6>
-        <ul>
-          <li><a href="#">Construção 3D</a></li>
-          <li><a href="#">Pré-fabricação</a></li>
-          <li><a href="#">Sistemas integrados</a></li>
-          <li><a href="#">Sustentabilidade</a></li>
-        </ul>
-      </div>
-      <div>
-        <h6>Projetos</h6>
-        <ul>
-          <li><a href="#">Carreço · Viana</a></li>
-          <li><a href="#">Pipeline</a></li>
-          <li><a href="#">Investidores</a></li>
-          <li><a href="#">Parcerias</a></li>
-        </ul>
-      </div>
-    </div>
+      <!-- Column 1 — Brand contacts + sections + social -->
+      <div class="footer-info-col">
+        <div class="footer-block">
+          <h6>Contactos</h6>
+          <ul class="footer-contact">
+            <li>
+              <span class="ff-k">Email</span>
+              <a href="mailto:sales@inhabitus.com">sales@inhabitus.com</a>
+            </li>
+            <li class="ff-tel-row">
+              <span class="ff-k">Telefone</span>
+              <div class="ff-tel-wrap">
+                <a href="tel:+351928411855">+351 928 411 855</a>
+                <a class="ff-whatsapp" href="https://wa.me/351928411855" target="_blank" rel="noopener" aria-label="Contactar via WhatsApp">
+                  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                    <path fill="currentColor" d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.91-7.01M12.04 20.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.26 8.26 0 0 1-1.26-4.39c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c.01 4.54-3.69 8.23-8.24 8.23m4.52-6.16c-.25-.12-1.46-.72-1.69-.8-.22-.08-.39-.12-.55.13-.16.25-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.04-.39-1.99-1.23-.74-.66-1.23-1.47-1.37-1.72-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.33-.76-1.82-.2-.48-.41-.41-.55-.42-.14-.01-.31-.01-.47-.01-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03 0 1.2.87 2.36.99 2.52.12.16 1.72 2.63 4.17 3.69.58.25 1.04.4 1.39.51.58.19 1.12.16 1.54.1.47-.07 1.46-.6 1.66-1.18.21-.58.21-1.07.14-1.18-.06-.1-.23-.16-.48-.28"/>
+                  </svg>
+                  WhatsApp
+                </a>
+              </div>
+            </li>
+            <li>
+              <span class="ff-k">Morada</span>
+              <span>R. da Indústria 150<br/>4485-946 Vilar do Pinheiro, PT</span>
+            </li>
+          </ul>
+        </div>
 
-    <div class="footer-mark">
-      <span class="stack"><span class="bg"></span>IN</span>Habitus<sup>®</sup>
+        <div class="footer-block">
+          <h6>Social</h6>
+          <ul class="footer-social">
+            <li><a href="#"><span>LinkedIn</span><span class="arrow">→</span></a></li>
+            <li><a href="#"><span>Instagram</span><span class="arrow">→</span></a></li>
+          </ul>
+        </div>
+
+        <div class="footer-block">
+          <h6>Secções</h6>
+          <ul class="footer-anchors">
+            <li><a href="#tecnologia">Tecnologia</a></li>
+            <li><a href="#modelo">Cadeia de Valor</a></li>
+            <li><a href="#processo">Processo</a></li>
+            <li><a href="#sustentabilidade">Sustentabilidade</a></li>
+            <li><a href="#comunidade">Comunidade</a></li>
+            <li><a href="#projetos">Projetos</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-block">
+          <h6>Media</h6>
+          <ul class="footer-media">
+            <li>
+              <a href="_assets/media/inhabitus-media-kit.zip" download>
+                <span class="ff-media-label">
+                  <span class="ff-media-title">Media Kit</span>
+                  <span class="ff-media-meta">Logos · Brand · Imagens (.zip)</span>
+                </span>
+                <span class="ff-media-icon" aria-hidden="true">↓</span>
+              </a>
+            </li>
+            <li>
+              <a href="mailto:press@inhabitus.com">
+                <span class="ff-media-label">
+                  <span class="ff-media-title">Imprensa</span>
+                  <span class="ff-media-meta">press@inhabitus.com</span>
+                </span>
+                <span class="ff-media-icon" aria-hidden="true">→</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Column 2 — Form (right side, cream half) -->
+      <div class="footer-form-col" id="contacto-form-wrap">
+        <div class="form-card">
+          <span class="form-card-cut-mark" aria-hidden="true"><i></i></span>
+          <span class="form-card-eyebrow">Fale connosco</span>
+          <h3 class="form-card-title">Vamos falar.</h3>
+          <p class="form-card-lede">Conte-nos sobre o projeto. Respondemos em 24h úteis.</p>
+          <form class="footer-form" id="footer-form" onsubmit="event.preventDefault(); this.classList.add('sent');">
+            <div class="ff-row-pair">
+              <div class="ff-row">
+                <label for="ff-name">Nome</label>
+                <input id="ff-name" type="text" placeholder="O seu nome" required />
+              </div>
+              <div class="ff-row">
+                <label for="ff-phone">Telefone</label>
+                <input id="ff-phone" type="tel" placeholder="+351 …" />
+              </div>
+            </div>
+            <div class="ff-row">
+              <label for="ff-email">Email</label>
+              <input id="ff-email" type="email" placeholder="email@exemplo.com" required />
+            </div>
+            <div class="ff-row">
+              <label for="ff-topic">Sobre o quê?</label>
+              <div class="ff-select-wrap">
+                <select id="ff-topic" name="topic" required>
+                  <option value="" disabled selected>Escolha um tópico</option>
+                  <option value="construcao">Empreendimentos em construção</option>
+                  <option value="proximos">Próximos empreendimentos</option>
+                  <option value="geral">Informação geral</option>
+                  <option value="carreiras">Trabalhar connosco</option>
+                  <option value="media">Imprensa / Media Kit</option>
+                </select>
+                <span class="ff-select-arrow" aria-hidden="true">▾</span>
+              </div>
+            </div>
+            <div class="ff-row">
+              <label for="ff-message">Mensagem</label>
+              <textarea id="ff-message" rows="4" placeholder="Como podemos ajudar?"></textarea>
+            </div>
+            <button class="btn btn-primary form-submit" type="submit">Enviar mensagem</button>
+          </form>
+        </div>
+      </div>
     </div>
 
     <div class="footer-bottom">
-      <span>© 2026 INHabitus<sup>®</sup> · Todos os direitos reservados.</span>
-      <div class="links">
-        <a href="#">Política de privacidade</a>
-        <a href="#">Termos</a>
-        <a href="#">Cookies</a>
-        <a href="#">LinkedIn</a>
-        <a href="#">Instagram</a>
+      <span class="footer-copy">
+        <img class="footer-brand-mark" src="_assets/logo/inhabitus.svg" alt="inHabitus" />
+        © 2026 inHabitus<sup>®</sup> · Todos os direitos reservados.
+      </span>
+      <div class="footer-bottom-right">
+        <div class="links">
+          <a href="#">Termos &amp; Condições</a>
+          <a href="#">Política de privacidade</a>
+        </div>
+        <a class="ny-badge ny-badge--footer" href="https://nineyards.pt" target="_blank" rel="noopener noreferrer" aria-label="Tailored by nineyards (nineyards.pt)">
+          <span class="ny-badge__label">Tailored by</span>
+          <span class="ny-badge__sep"></span>
+          <span class="ny-badge__logo">nineyards</span>
+        </a>
       </div>
     </div>
   </div>
 </footer>
 
 <script>
+  // ---------- Mobile menu (hamburger) ----------
+  const burger = document.querySelector('.nav-burger');
+  const sheet  = document.getElementById('mobile-menu');
+  if (burger && sheet) {
+    // Remove the HTML `hidden` attribute up-front — CSS now controls visibility
+    sheet.removeAttribute('hidden');
+    const closeSheet = () => {
+      burger.setAttribute('aria-expanded', 'false');
+      sheet.classList.remove('open');
+    };
+    burger.addEventListener('click', () => {
+      const open = burger.getAttribute('aria-expanded') === 'true';
+      burger.setAttribute('aria-expanded', open ? 'false' : 'true');
+      sheet.classList.toggle('open', !open);
+    });
+    sheet.querySelectorAll('a').forEach(a => a.addEventListener('click', closeSheet));
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 900) closeSheet();
+    });
+  }
+
+  // ---------- Positioning lede — scroll-linked word reveal ----------
+  // Splits the lede into per-word spans preserving the bold-phrase parent
+  // styling, then progressively reveals words tied to scroll progress so the
+  // sentence "unveils" left-to-right, in reading order, regardless of weight.
+  (function setupLedeReveal() {
+    const lede = document.querySelector('.positioning-lede');
+    const section = document.querySelector('.positioning');
+    if (!lede || !section) return;
+
+    const wordSpans = [];
+    function walk(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const parts = node.textContent.split(/(\s+)/);
+        const frag = document.createDocumentFragment();
+        parts.forEach(p => {
+          if (!p) return;
+          if (/^\s+$/.test(p)) {
+            frag.appendChild(document.createTextNode(p));
+          } else {
+            const span = document.createElement('span');
+            span.className = 'lede-word';
+            span.textContent = p;
+            wordSpans.push(span);
+            frag.appendChild(span);
+          }
+        });
+        node.parentNode.replaceChild(frag, node);
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        Array.from(node.childNodes).forEach(walk);
+      }
+    }
+    Array.from(lede.childNodes).forEach(walk);
+
+    let ticking = false;
+    function update() {
+      const rect = section.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      // 0 → section top is at viewport bottom (just entering)
+      // 1 → section top is at top 25% of viewport (well in view)
+      const start = vh * 0.95;
+      const end   = vh * 0.25;
+      const range = start - end;
+      let progress = (start - rect.top) / range;
+      progress = Math.max(0, Math.min(1, progress));
+      const shown = Math.round(progress * wordSpans.length);
+      wordSpans.forEach((w, i) => w.classList.toggle('shown', i < shown));
+      ticking = false;
+    }
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  })();
+
   // ---------- IntersectionObserver: reveal-on-scroll ----------
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -2532,18 +3715,113 @@
   }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  // ---------- MMC tabs ----------
+  // ---------- MMC tabs (with auto-cycle until first interaction) ----------
   const cards = document.querySelectorAll('.mmc-card');
   const details = document.querySelectorAll('.mmc-detail');
+
+  function activateMmc(card) {
+    const tgt = card.dataset.target;
+    cards.forEach(c => c.classList.remove('active'));
+    details.forEach(d => d.classList.remove('open'));
+    card.classList.add('active');
+    const detail = document.getElementById(tgt);
+    if (detail) detail.classList.add('open');
+  }
+
+  // Auto-cycle through cards every 3.2s until the user interacts
+  let mmcAutoIndex = 0;
+  let mmcAutoTimer = null;
+  let mmcAutoStarted = false;
+
+  function startMmcAutoCycle() {
+    if (mmcAutoStarted || cards.length === 0) return;
+    mmcAutoStarted = true;
+    // Find current active card position to advance from there
+    cards.forEach((c, i) => { if (c.classList.contains('active')) mmcAutoIndex = i; });
+    mmcAutoTimer = setInterval(() => {
+      mmcAutoIndex = (mmcAutoIndex + 1) % cards.length;
+      activateMmc(cards[mmcAutoIndex]);
+    }, 3200);
+  }
+  function stopMmcAutoCycle() {
+    if (mmcAutoTimer) { clearInterval(mmcAutoTimer); mmcAutoTimer = null; }
+    mmcAutoStarted = true; // prevent restart for this session
+  }
+
+  // Start auto-cycle only when the MMC section enters the viewport
+  // AND we are not on a mobile viewport (mobile shows all 4 panels stacked,
+  // so cycling would be meaningless and the .mmc-cards row is hidden).
+  const mmcSection = document.getElementById('tecnologia');
+  const isMobileVP = () => window.matchMedia('(max-width: 900px)').matches;
+  if (mmcSection && !isMobileVP()) {
+    const mmcIO = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          startMmcAutoCycle();
+          mmcIO.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    mmcIO.observe(mmcSection);
+  }
+
   cards.forEach(card => {
     card.addEventListener('click', () => {
-      const tgt = card.dataset.target;
-      cards.forEach(c => c.classList.remove('active'));
-      details.forEach(d => d.classList.remove('open'));
-      card.classList.add('active');
-      const detail = document.getElementById(tgt);
-      if (detail) detail.classList.add('open');
+      stopMmcAutoCycle();
+      activateMmc(card);
     });
+  });
+
+  // ---------- MMC mobile accordion (≤900px) ----------
+  // Click on the first inner div toggles expansion of that detail.
+  // Multiple can be open at once — pattern matches Cadeia de Valor (independent).
+  document.querySelectorAll('.mmc-detail .mmc-detail-inner > div:first-child').forEach(header => {
+    header.addEventListener('click', () => {
+      if (window.matchMedia('(max-width: 900px)').matches) {
+        header.closest('.mmc-detail').classList.toggle('expanded');
+      }
+    });
+  });
+
+  // ---------- Cadeia de Valor auto-cycle (desktop only) ----------
+  // Rotates through the 4 <details> pillars every 3.6s, opening one at a time
+  // (exclusive). First user click on any summary stops autoplay permanently.
+  const pillars = document.querySelectorAll('#modelo .model-pillar');
+  let cadeiaIdx = 0, cadeiaTimer = null, cadeiaStarted = false;
+  function openPillar(i) {
+    pillars.forEach((p, idx) => {
+      if (idx === i) p.setAttribute('open', '');
+      else p.removeAttribute('open');
+    });
+  }
+  function startCadeiaAutoCycle() {
+    if (cadeiaStarted || pillars.length === 0) return;
+    cadeiaStarted = true;
+    pillars.forEach((p, i) => { if (p.hasAttribute('open')) cadeiaIdx = i; });
+    cadeiaTimer = setInterval(() => {
+      cadeiaIdx = (cadeiaIdx + 1) % pillars.length;
+      openPillar(cadeiaIdx);
+    }, 3600);
+  }
+  function stopCadeiaAutoCycle() {
+    if (cadeiaTimer) { clearInterval(cadeiaTimer); cadeiaTimer = null; }
+    cadeiaStarted = true;
+  }
+  const cadeiaSection = document.getElementById('modelo');
+  if (cadeiaSection && !isMobileVP()) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          startCadeiaAutoCycle();
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.35 });
+    io.observe(cadeiaSection);
+  }
+  pillars.forEach(p => {
+    const summary = p.querySelector('summary');
+    if (summary) summary.addEventListener('click', stopCadeiaAutoCycle);
   });
 
   // ---------- Stages tabs (click to load detail) ----------
@@ -2578,20 +3856,82 @@
       stageDetail.classList.add('open');
     }, 220);
   }
+  // ---------- Processo auto-cycle (desktop only) ----------
+  // Rotates through the 5 stages every 3.6s, loading the matching detail panel.
+  // Any click stops the autoplay permanently. Hover-to-load on desktop also stops.
+  let processoIdx = 0, processoTimer = null, processoStarted = false;
+  function activateStage(idx) {
+    stages.forEach(x => x.classList.remove('active'));
+    if (stages[idx]) {
+      stages[idx].classList.add('active');
+      loadStage(stages[idx].dataset.stage);
+    }
+  }
+  function startProcessoAutoCycle() {
+    if (processoStarted || stages.length === 0) return;
+    processoStarted = true;
+    stages.forEach((s, i) => { if (s.classList.contains('active')) processoIdx = i; });
+    processoTimer = setInterval(() => {
+      processoIdx = (processoIdx + 1) % stages.length;
+      activateStage(processoIdx);
+    }, 3600);
+  }
+  function stopProcessoAutoCycle() {
+    if (processoTimer) { clearInterval(processoTimer); processoTimer = null; }
+    processoStarted = true;
+  }
+  // Auto-cycle intentionally disabled — Terreno (s1) stays open by default
+  // until the user explicitly hovers/clicks another stage.
+
   stages.forEach(s => {
     s.addEventListener('click', () => {
+      stopProcessoAutoCycle();
       stages.forEach(x => x.classList.remove('active'));
       s.classList.add('active');
       loadStage(s.dataset.stage);
     });
     s.addEventListener('mouseenter', () => {
+      // Hover-to-load only on non-touch devices (desktop); also halts autoplay.
+      if (!window.matchMedia('(hover: hover)').matches) return;
+      stopProcessoAutoCycle();
       stages.forEach(x => x.classList.remove('active'));
       s.classList.add('active');
       loadStage(s.dataset.stage);
     });
   });
 
-  // ---------- Project map: hotspots / labels / tabs ----------
+  // ---------- Processo mobile: inject inline detail after each stage ----------
+  // Builds a .stage-mobile-detail sibling next to each .stage button by cloning
+  // the corresponding <template id="stage-data-sX">. CSS handles show/hide via
+  // .stage.active + .stage-mobile-detail. The exclusive accordion is already
+  // wired via the click handler above (which strips .active from siblings).
+  stages.forEach(s => {
+    const id = s.dataset.stage;
+    const tpl = document.getElementById('stage-data-' + id);
+    if (!tpl) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'stage-mobile-detail';
+    // Build a clean inner structure from the template
+    const num = tpl.content.querySelector('.stage-detail-num')?.textContent || '';
+    const title = tpl.content.querySelector('.stage-detail-title')?.textContent || '';
+    const lede = tpl.content.querySelector('.stage-detail-lede')?.textContent || '';
+    const dl = tpl.content.querySelector('dl')?.outerHTML || '';
+    const statNum = tpl.content.querySelector('.stat-num')?.innerHTML || '';
+    const statLabel = tpl.content.querySelector('.stat-label')?.textContent || '';
+    wrap.innerHTML = `
+      <span class="stage-detail-num">${num}</span>
+      <h3 class="stage-detail-title">${title}</h3>
+      <p class="stage-detail-lede">${lede}</p>
+      ${dl}
+      <span class="stat-num">${statNum}</span><span class="stat-label">${statLabel}</span>
+    `;
+    s.insertAdjacentElement('afterend', wrap);
+  });
+
+  // ---------- Project map: hotspot dots / labels / tabs ----------
+  // Hotspot dots sit ON TOP of the highlighted districts and are the click +
+  // hover targets. Labels are hidden by default — revealed only when a hotspot
+  // (or tab) is active. Desktop: hover. Mobile: tap.
   const projectEls = {
     hotspots: document.querySelectorAll('.hotspot[data-project]'),
     labels:   document.querySelectorAll('.map-label[data-project]'),
@@ -2603,14 +3943,51 @@
       group.forEach(el => el.classList.toggle('active', el.dataset.project === id));
     });
   }
-  ['hotspots','labels','tabs'].forEach(group => {
-    projectEls[group].forEach(el => {
-      el.addEventListener('click', () => selectProject(el.dataset.project));
-      el.addEventListener('mouseenter', () => {
-        if (group === 'hotspots' || group === 'labels') selectProject(el.dataset.project);
-      });
+  // Click → activate (mobile + desktop)
+  projectEls.hotspots.forEach(el => {
+    el.addEventListener('click', () => selectProject(el.dataset.project));
+  });
+  // Tab click — activate. On mobile, MOVE the .map-panel as a direct sibling
+  // right after the clicked tab, producing an accordion-in-place effect.
+  const mapPanel = document.querySelector('.map-panel');
+  function dockPanelToTab(tab) {
+    if (!mapPanel || !tab) return;
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      tab.insertAdjacentElement('afterend', mapPanel);
+    }
+  }
+  projectEls.tabs.forEach(el => {
+    el.addEventListener('click', () => {
+      selectProject(el.dataset.project);
+      dockPanelToTab(el);
     });
   });
+  // On page load, dock under the initially active tab so the first card is
+  // already in accordion position when the user reaches the section on mobile.
+  const initialActiveTab = document.querySelector('.project-tab.active');
+  if (initialActiveTab) dockPanelToTab(initialActiveTab);
+  // When viewport changes between mobile/desktop, reset the panel back to
+  // .map-stage on desktop so it shows in the canvas-panel layout.
+  const mapStage = document.querySelector('.map-stage');
+  let wasMobile = window.matchMedia('(max-width: 900px)').matches;
+  window.addEventListener('resize', () => {
+    const isMobile = window.matchMedia('(max-width: 900px)').matches;
+    if (isMobile !== wasMobile) {
+      wasMobile = isMobile;
+      if (isMobile) {
+        const active = document.querySelector('.project-tab.active');
+        if (active) dockPanelToTab(active);
+      } else if (mapStage && mapPanel && mapPanel.parentElement !== mapStage) {
+        mapStage.appendChild(mapPanel);
+      }
+    }
+  });
+  // Hover-to-activate only on devices that hover (desktop pointer)
+  if (window.matchMedia('(hover: hover)').matches) {
+    projectEls.hotspots.forEach(el => {
+      el.addEventListener('mouseenter', () => selectProject(el.dataset.project));
+    });
+  }
 
   // ---------- Flip cards (click + keyboard) ----------
   document.querySelectorAll('.flip-card').forEach(card => {
@@ -2639,8 +4016,6 @@
   const parallaxTargets = [
     { sel: '.process-quote',       factor: 0.14, max: 70 },
     { sel: '.process-headline',    factor: 0.06, max: 32 },
-    { sel: '.map-canvas',          factor: 0.10, max: 60 },
-    { sel: '.map-panel',           factor: -0.08, max: 50 },
     { sel: '.community-img-tag',   factor: 0.22, max: 90 },
     { sel: '.mmc-illustration',    factor: 0.14, max: 70 },
     { sel: '.sustain-stats',       factor: 0.08, max: 40 },
@@ -2671,28 +4046,136 @@
   }, { passive: true });
   runParallax();
 
-  // ---------- Stat count-up ----------
-  const counters = document.querySelectorAll('.hero-stat .num, .sustain-stat .num');
-  const cio = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      const el = e.target;
-      const target = parseInt(el.textContent, 10);
-      if (isNaN(target)) return;
-      const sup = el.querySelector('sup') ? '<sup>%</sup>' : '';
-      let cur = 0;
-      const dur = 1100, t0 = performance.now();
-      function step(now) {
-        const p = Math.min(1, (now - t0) / dur);
-        cur = Math.round(target * (1 - Math.pow(1-p, 3)));
-        el.innerHTML = cur + sup;
-        if (p < 1) requestAnimationFrame(step);
+  // ---------- Stat count-up (sophisticated staggered cascade) ----------
+  // Each group animates its own numbers in a cascade — varied delays,
+  // durations and easings, so the page never feels mechanical.
+  (function () {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Easings — a small library so we can mix per-element
+    const easings = {
+      expo:    t => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+      quart:   t => 1 - Math.pow(1 - t, 4),
+      quint:   t => 1 - Math.pow(1 - t, 5),
+      backish: t => { const c = 1.20, c3 = c + 1; return 1 + c3 * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); }
+    };
+
+    // A pleasant, non-monotonic schedule for groups of 4 stats.
+    // First number leads, the rest cascade with slight rhythm changes.
+    const schedule = [
+      { delay:   0, duration: 1200, ease: 'expo'    },
+      { delay: 180, duration: 1350, ease: 'quart'   },
+      { delay: 420, duration: 1550, ease: 'backish' },
+      { delay: 680, duration: 1450, ease: 'quint'   }
+    ];
+
+    function prepare(el) {
+      if (el.dataset.countReady === '1') return;
+      const raw = el.textContent.trim();
+      const match = raw.match(/^(\d+)/);
+      const target = match ? parseInt(match[1], 10) : NaN;
+      const hasSup = !!el.querySelector('sup');
+      const supHTML = hasSup ? '<sup>%</sup>' : '';
+      el.dataset.countTarget = isNaN(target) ? '' : String(target);
+      el.dataset.countSup    = supHTML;
+      el.dataset.countReady  = '1';
+      if (!isNaN(target)) {
+        el.innerHTML = '0' + supHTML;
+        el.style.willChange = 'transform, opacity';
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(10px)';
+        el.style.transition = 'opacity .55s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1)';
       }
-      requestAnimationFrame(step);
-      cio.unobserve(el);
+    }
+
+    function play(el, opts) {
+      const target = parseInt(el.dataset.countTarget, 10);
+      const supHTML = el.dataset.countSup || '';
+      if (isNaN(target)) return;
+      const dur  = opts.duration;
+      const ease = easings[opts.ease] || easings.expo;
+      const delay = opts.delay || 0;
+      setTimeout(() => {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+        const t0 = performance.now();
+        function step(now) {
+          const p = Math.min(1, (now - t0) / dur);
+          const v = Math.round(target * ease(p));
+          el.innerHTML = v + supHTML;
+          if (p < 1) {
+            requestAnimationFrame(step);
+          } else {
+            el.style.willChange = '';
+          }
+        }
+        requestAnimationFrame(step);
+      }, delay);
+    }
+
+    function runGroup(group) {
+      const els = Array.from(group.querySelectorAll('.num'));
+      els.forEach(prepare);
+      if (prefersReduced) {
+        els.forEach(el => {
+          const t = parseInt(el.dataset.countTarget, 10);
+          if (!isNaN(t)) {
+            el.innerHTML = t + (el.dataset.countSup || '');
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+          }
+        });
+        return;
+      }
+      // Slight jitter so successive sections don't feel cloned
+      const jitter = () => (Math.random() * 60) | 0;
+      els.forEach((el, i) => {
+        const s = schedule[i] || schedule[schedule.length - 1];
+        play(el, { delay: s.delay + jitter(), duration: s.duration, ease: s.ease });
+      });
+    }
+
+    const groups = document.querySelectorAll('.hero-stats, .sustain-stats');
+    if (!groups.length) return;
+    // Pre-set initial state ASAP so the resting numbers don't flash before the cascade.
+    groups.forEach(g => g.querySelectorAll('.num').forEach(prepare));
+    const cio = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        runGroup(e.target);
+        cio.unobserve(e.target);
+      });
+    }, { threshold: 0.25 });
+    groups.forEach(g => cio.observe(g));
+  })();
+
+  /* ---------------- CTA → form (preset dropdown) ---------------- */
+  (function(){
+    const topicSelect = document.getElementById('ff-topic');
+    const formCard = document.querySelector('.footer-form-col .form-card');
+    document.querySelectorAll('a.cta-to-form').forEach(a => {
+      a.addEventListener('click', function(e){
+        const topic = this.getAttribute('data-form-topic');
+        if (topicSelect && topic) {
+          topicSelect.value = topic;
+          topicSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        // Briefly highlight the form card to signal where focus went
+        if (formCard) {
+          formCard.classList.remove('flash');
+          // force reflow to restart animation
+          void formCard.offsetWidth;
+          formCard.classList.add('flash');
+          setTimeout(() => formCard.classList.remove('flash'), 1400);
+        }
+        // After scroll settles, focus the message field
+        setTimeout(() => {
+          const msg = document.getElementById('ff-message');
+          if (msg) msg.focus({ preventScroll: true });
+        }, 700);
+      });
     });
-  }, { threshold: 0.4 });
-  counters.forEach(c => cio.observe(c));
+  })();
 </script>
 
 </body>

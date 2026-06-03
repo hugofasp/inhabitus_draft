@@ -1,3 +1,29 @@
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Vercel
 .vercel
-node_modules
+.env*.local
+
+# Node (in case anything is added later)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Logs
+*.log
+
+# Local agent tooling
+.claude/
+
+# Throwaway approval artifacts (kept local, excluded from repo + deploy)
+hero-options.html
+hero-options.pdf
+*.bak
