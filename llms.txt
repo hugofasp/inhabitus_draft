@@ -1,0 +1,31 @@
+# inHabitus
+
+> A inHabitus integra arquitetura, engenharia e fabrico numa só equipa: construção industrializada e métodos modernos de construção, com custo previsível, prazo controlado e qualidade auditável em cada unidade entregue.
+
+A inHabitus é uma empresa portuguesa de construção industrializada. Combina quatro métodos (impressão 3D in-situ, betão pré-fabricado, light steel framing e construção modular) num só sistema construtivo verticalmente integrado, do estudo do terreno à entrega e à gestão da comunidade.
+
+## Principais indicadores
+- Redução de prazo: 50%
+- Poupança de custo: 30%
+- Redução de resíduos: 80%
+- Redução de risco em obra: 80%
+
+Valores aferidos em obra e certificados por entidade externa.
+
+## Secções do site
+- [Projetos](https://inhabitus.com/#projetos): pipeline 2026 a 2028 em Portugal.
+- [Tecnologia](https://inhabitus.com/#tecnologia): os quatro métodos de construção.
+- [Cadeia de valor](https://inhabitus.com/#modelo): padronização em escala.
+- [Processo](https://inhabitus.com/#processo): cinco etapas, da terra à chave.
+- [Sustentabilidade](https://inhabitus.com/#sustentabilidade): menos resíduo, energia e prazo.
+- [Comunidade](https://inhabitus.com/#comunidade): gestão de condomínio e espaços comuns.
+
+## Recursos
+- [Media Kit (.zip)](https://inhabitus.com/_assets/media/inhabitus-media-kit.zip)
+- [Conteúdo completo para LLMs](https://inhabitus.com/llms-full.txt)
+
+## Contactos
+- Comercial: sales@inhabitus.com
+- Imprensa: press@inhabitus.com
+- Telefone: +351 928 411 855
+- Morada: R. da Indústria 150, 4485-946 Vilar do Pinheiro, Portugal

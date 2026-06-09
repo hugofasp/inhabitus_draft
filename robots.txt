@@ -1,0 +1,8 @@
+# robots.txt - inHabitus (https://inhabitus.com)
+User-agent: *
+Allow: /
+
+# AI / LLM context files
+# /llms.txt and /llms-full.txt provide a clean summary of this site.
+
+Sitemap: https://inhabitus.com/sitemap.xml

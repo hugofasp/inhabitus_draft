@@ -1,0 +1,14 @@
+{
+  "name": "inHabitus",
+  "short_name": "inHabitus",
+  "description": "Construção industrializada e impressão 3D. Custo previsível, prazo controlado, qualidade auditável.",
+  "lang": "pt-PT",
+  "icons": [
+    { "src": "/_assets/logo/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/_assets/logo/favicon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#FAFAF7",
+  "background_color": "#FAFAF7",
+  "display": "standalone",
+  "start_url": "/"
+}

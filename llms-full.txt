@@ -1,0 +1,110 @@
+# inHabitus
+
+> A inHabitus integra arquitetura, engenharia e fabrico numa só equipa: construção industrializada e métodos modernos de construção, com custo previsível, prazo controlado e qualidade auditável em cada unidade entregue.
+
+Este ficheiro reúne, em texto, o conteúdo integral do site inhabitus.com para consumo por modelos de linguagem.
+
+## Quem somos
+
+A inHabitus integra arquitetura, engenharia e fabrico numa só equipa. Quando a construção deixa de ser projeto e passa a ser sistema, o prazo e o custo tornam-se previsíveis. Industrialização e integração vertical, do estudo do terreno à entrega.
+
+A verticalização e a agilidade permitem construir mais casas, a preços mais acessíveis. Um processo que democratiza, que cresce depressa e que, em breve, estará consigo.
+
+## Indicadores (certificados por entidade externa)
+
+- 50% de redução de prazo
+- 30% de poupança de custo
+- 80% de redução de resíduos
+- 80% de redução de risco em obra
+
+## Projetos (pipeline em Portugal, 2026 a 2028)
+
+- Viana do Castelo, Carreço: Em construção (2026). 37 moradias unifamiliares numa parcela a quinze minutos da praia. Tipologias V2-A, V2-B e V3, com pátio privado, jardim e parqueamento. Localização: Lugar de Montedor, Carreço.
+- Alfena, Origem Villas: Esgotado. 79 moradias V2, V3 e V4 a quinze minutos do Porto. Condomínio com Smart Home, comodidades comuns (ginásio, piscina, espaço multifunções) e jardins privativos. Impressão 3D, sistema verticalmente integrado. Localização: Rua das Passarias, Alfena.
+- Setúbal: Em breve. Próximo empreendimento da pipeline. Lançamento comercial em breve. Tipologias V2 e V3.
+- Benavente: Em breve. Próximo empreendimento da pipeline. Tipologias V2 e V3.
+- Barcelos: Em estudo (2027). Fase de aquisição de terreno e estudo de viabilidade. Mesmo sistema construtivo.
+- Gândra: Em estudo (2027). Fase de aquisição de terreno e estudo de viabilidade.
+- Gaia: Em estudo (2028). Fase de aquisição de terreno e estudo de viabilidade.
+- Vizela: Em estudo (2028). Fase de aquisição de terreno e estudo de viabilidade.
+
+## Tecnologia: métodos modernos de construção
+
+Quatro métodos integrados num só sistema construtivo. Cada um resolve uma parte do problema (desperdício, prazo, custo, qualidade). Em conjunto, definem a forma como a inHabitus constrói.
+
+### 1. Impressão 3D (sistema-base)
+Aplicação por camadas de material avançado, guiada por um modelo digital de alta precisão. Resultado: paredes contínuas, geometria livre e redução drástica de desperdício, prazo e energia.
+- Método: impressão por camadas (in-situ)
+- Precisão: modelo digital BIM-driven
+- Resíduo: menos 80% face à construção tradicional
+- Custo: menos 30% no custo total de construção
+- Energia: menos 50% no consumo de obra
+- Prazo: mais 70% rápida na entrega
+
+### 2. Betão pré-fabricado
+Elementos estruturais e de envolvente betonados em fábrica, com armaduras e acabamentos integrados de origem. Em obra, montagem com tolerâncias industriais e ciclos curtos. Ideal para empreendimentos de média e larga escala.
+- Produção: fábrica certificada, cura controlada
+- Geometria: família dimensional do sistema construtivo
+- Aplicação: içamento e selagem em obra
+- Logística: just-in-time, rastreabilidade total
+
+### 3. Light Steel Framing
+Onde o sistema impresso pede reforço (vãos amplos, pisos suspensos, coberturas), entra o light steel framing. Perfis metálicos calibrados, dimensionados por cálculo, integrados de fábrica ao sistema construtivo.
+- Sistema: perfis em aço galvanizado de baixa espessura
+- Função: estrutura primária e secundária
+- Vãos: até 9 m sem apoio intermédio
+- Peso: cerca de um quarto de uma estrutura tradicional equivalente
+
+### 4. Construção modular
+Painéis, núcleos técnicos e elementos de cozinha e casa-de-banho produzidos fora da obra, em ambiente controlado. Em obra, montagem com tolerâncias industriais e zero retrabalho. O sistema 3D fica responsável pela envolvente; o módulo entrega o interior.
+- Produção: linha controlada em fábrica
+- Tolerância: mais ou menos 2 mm
+- Aplicação: núcleos técnicos, cozinha, casa-de-banho
+
+## Cadeia de valor: padronização em escala
+
+O mesmo sistema construtivo, replicável. As mesmas tipologias, com variações controladas. Resultado: redução real de custo unitário, prazo previsível e qualidade auditável.
+
+1. Padronização do sistema: tipologias V2 e V3 definidas como produto, com variações controladas. Catálogo fechado, acabamentos pré-aprovados em três níveis, lista de opções documentada.
+2. Integração vertical: arquitetura, engenharia, fabrico e construção numa só equipa. Sem subcontratação especulativa. Responsabilidade técnica nominal e auditável.
+3. Custo unitário previsível: menos desperdício, menos retrabalho, menos imprevistos. Cerca de 30% de redução face ao tradicional. Margens de obra contratualmente fechadas.
+4. Escala replicável: um único processo aplicável de Carreço a qualquer geografia onde o terreno e o regulamento o permitam.
+
+## Processo: cinco etapas
+
+Da leitura do terreno à vida em comunidade. Uma equipa, um sistema, sem fricção. Do projeto à chave, sob uma só responsabilidade.
+
+1. Terreno: avaliação, viabilidade e licenciamento integrados. Topografia em modelo 3D e estudo solar. Duração média de três meses.
+2. Desenho: arquitetura e engenharia em modelo único BIM.
+3. Desenvolvimento: impressão 3D em obra e elementos pré-fabricados em fábrica.
+4. Entrega: acabamentos, comissionamento de Smart Home e entrega chave-na-mão.
+5. Comunidade: vida em condomínio, espaços partilhados e manutenção do sistema, sem terceiros.
+
+## Sustentabilidade
+
+Construir de forma responsável é também construir de forma inteligente. Menos resíduo, menos energia, menos prazo, sem comprometer escala nem qualidade.
+
+- 80% menos desperdício de material em obra face à construção tradicional.
+- 30% de redução do custo total de construção.
+- 80% de redução de risco em obra face à construção tradicional.
+- 50% de redução do prazo de entrega ao cliente final (doze meses, da terra à chave).
+
+## Comunidade
+
+A inHabitus permanece no projeto depois da chave: gestão de condomínio, manutenção do sistema construtivo e espaços comuns.
+- Gestão de condomínio: portaria com presença diária, vídeo-vigilância 24h em áreas comuns, cacifos inteligentes.
+- Espaços partilhados: ginásio e sala de yoga, piscina exterior, jardim e áreas verdes, parque infantil, lavandaria self-service.
+- Espaço multifunções: co-working e sala de eventos com cozinha.
+- Manutenção contínua: quem construiu o sistema é quem o mantém, com rastreabilidade técnica de cada unidade.
+
+## Living as a Service
+
+A casa vem com uma plataforma de serviços integrada: limpeza, lavandaria, manutenção doméstica, apoio familiar, creche, cuidados sénior, alimentação, guest rooms e convívio. A inHabitus mantém uma rede de parceiros para estes serviços.
+
+## Contactos
+
+- Comercial: sales@inhabitus.com
+- Imprensa: press@inhabitus.com
+- Telefone: +351 928 411 855 (WhatsApp disponível)
+- Morada: R. da Indústria 150, 4485-946 Vilar do Pinheiro, Portugal
+- Site: https://inhabitus.com
