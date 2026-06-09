@@ -143,12 +143,14 @@
   .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
   .section { padding: 120px 0; position: relative; }
   .section-eyebrow {
+    /* Section eyebrow kickers removed by request — kept the rule for easy
+       restore (flip display back to inline-flex). */
+    display: none;
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--paper-mute);
-    display: inline-flex;
     align-items: center;
     gap: 12px;
   }
@@ -920,6 +922,86 @@
   }
 
   /* ===========================================================
+     S6.5 — LIVING AS A SERVICE (LaaS)
+     =========================================================== */
+  .laas { background: var(--bg); position: relative; padding: 80px 0; }
+  .laas-grid {
+    display: grid; grid-template-columns: 7fr 5fr; gap: 52px;
+    align-items: center;
+  }
+  .laas-copy .section-title {
+    font-size: clamp(32px, 3.4vw, 46px);
+    margin: 16px 0 22px;
+  }
+  .laas-copy .section-lede { font-size: 16px; margin-bottom: 4px; }
+  .laas-em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--blue-deep);
+    letter-spacing: -0.01em;
+  }
+  .laas-media {
+    position: relative;
+    aspect-ratio: 4/5;
+    max-height: 420px;
+    margin-left: auto;
+    width: 100%;
+    clip-path: var(--card-clip-br);
+    overflow: hidden;
+    background: var(--ink-3);
+  }
+  .laas-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease; }
+  .laas-media:hover img { transform: scale(1.04); }
+  .laas-chips {
+    display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0 0;
+    list-style: none; padding: 0;
+  }
+  .laas-chips li {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--ink);
+    background: var(--ink-2);
+    border: 1px solid var(--line);
+    padding: 9px 15px;
+    clip-path: polygon(0 0, 100% 0, 100% 58%, 92% 100%, 0 100%);
+    cursor: default;
+    transition: transform .28s cubic-bezier(.2,.7,.2,1), border-color .28s ease,
+                background-color .28s ease, box-shadow .28s ease;
+  }
+  /* tri-colour marker cycles through the brand palette — the same rhythm cue
+     used by the section accent strips */
+  .laas-chips li::before {
+    content: ''; flex: none; width: 7px; height: 7px;
+    background: var(--blue);
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 60% 100%, 0 100%);
+    transition: transform .28s cubic-bezier(.2,.7,.2,1);
+  }
+  .laas-chips li:nth-child(3n+2)::before { background: var(--lime); }
+  .laas-chips li:nth-child(3n)::before   { background: var(--peach); }
+  .laas-chips li:hover {
+    transform: translateY(-3px);
+    border-color: var(--ink);
+    background: #fff;
+    box-shadow: 0 6px 16px rgba(10, 11, 13, .08);
+  }
+  .laas-chips li:hover::before { transform: scale(1.4) rotate(-8deg); }
+
+  /* Supplier CTA — invites service partners to the footer form */
+  .laas-supplier {
+    margin-top: 30px; padding-top: 24px;
+    border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 14px 26px; justify-content: space-between;
+  }
+  .laas-supplier-text {
+    margin: 0; font-size: 14px; line-height: 1.5;
+    color: var(--paper-mute); max-width: 44ch;
+  }
+  .laas-supplier-text span { color: var(--ink); }
+  .laas-supplier-cta { white-space: nowrap; }
+
+  /* ===========================================================
      S8 — FOOTER (minimal: form + contacts + anchors + T&Cs)
      =========================================================== */
   .footer {
@@ -1437,7 +1519,7 @@
   #sustentabilidade { background: var(--bg); }
   /* S6 Comunidade — already --ink-2 */
   /* Soft top shadow on alternating sections — adds contrast/depth */
-  .mmc::before, .process::before, .community::before {
+  .mmc::before, .process::before, .community::before, .laas::before {
     content: ''; position: absolute; left: 0; right: 0; top: 0; height: 80px;
     background: linear-gradient(to bottom, rgba(10,11,13,.05), transparent);
     pointer-events: none; z-index: 0;
@@ -1456,6 +1538,7 @@
   .process::after      { background: var(--lime); }
   #sustentabilidade::after { background: var(--peach); }
   .community::after    { background: var(--peach); }
+  .laas::after         { background: var(--blue); }
   .hero::after         { display: none; }
   .section .wrap { position: relative; z-index: 1; }
 
@@ -1881,12 +1964,12 @@
   .map-project-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s ease; }
   .map-project:hover .map-project-img img { transform: scale(1.04); }
   /* Placeholder cards (Em breve / Em estudo) — use the shared inh_coming_soon
-     photo as backdrop with a light-gray brand cut-corner tag overlaid as a
-     subtle identity mark. Heavy cream-tinted veil keeps the photo as a soft,
-     smooth context (not a focal image) and gives the brand shape room to read. */
+     photo as a clearly-visible backdrop with a light brand cut-corner mark on
+     top. A light cream veil keeps it slightly muted (signals "not final") while
+     letting the photo actually read as an image. */
   .map-project-img.placeholder {
     background:
-      linear-gradient(135deg, rgba(250,250,247,0.78) 0%, rgba(250,250,247,0.62) 60%, rgba(250,250,247,0.82) 100%),
+      linear-gradient(135deg, rgba(250,250,247,0.30) 0%, rgba(250,250,247,0.18) 55%, rgba(250,250,247,0.42) 100%),
       url('_assets/img/inh_coming_soon.png') center / cover no-repeat,
       var(--ink-3);
   }
@@ -1894,32 +1977,22 @@
     content: '';
     position: absolute;
     inset: 0;
-    /* Cut-corner brand tag shape (matches inHabitus logo). Light gray on top
-       of the photo, sized as a centered mark — not full-bleed. */
-    width: 38%;
-    height: 64%;
-    top: 18%;
-    left: 31%;
-    background: rgba(245,245,242,0.78);
+    /* Cut-corner brand tag shape (matches inHabitus logo). Sits on top of the
+       photo as a centered identity mark — lighter so the photo stays visible. */
+    width: 34%;
+    height: 56%;
+    top: 22%;
+    left: 33%;
+    background: rgba(245,245,242,0.55);
     clip-path: polygon(0 0, 100% 0, 100% 60%, 78% 100%, 0 100%);
     pointer-events: none;
     z-index: 1;
   }
   /* Hide the legacy letter mark — the photo + brand shape replaces it. */
   .placeholder-mark { display: none; }
-  /* Alfena photo has a white sky/tree column baked into the LEFT THIRD of
-     the source JPG. The image's aspect ratio is already ~16/9 so object-fit
-     cover fills horizontally with no slack — object-position can't crop it.
-     Instead, scale the image up and anchor to the right so the building
-     expands into frame and the white edge falls outside .overflow:hidden. */
-  .map-project[data-project="alfena"] .map-project-img img {
-    transform: scale(1.22);
-    transform-origin: 80% center;
-  }
-  .map-project[data-project="alfena"]:hover .map-project-img img {
-    transform: scale(1.26);
-    transform-origin: 80% center;
-  }
+  /* Alfena uses a clean 16/9 render that fills the frame edge-to-edge, so it
+     renders exactly like the other project photos (plain object-fit: cover +
+     the shared hover scale). No special transform needed. */
   .project-tag-overlay {
     position: absolute; top: 18px; left: 18px; z-index: 2;
     background: var(--peach); color: var(--ink);
@@ -2039,9 +2112,9 @@
      Breve      → brand blue-deep
   */
   [data-status="esgotado"]   { --status-color: #C36868; --status-bg: #C36868;   --status-fg: var(--bg); }
-  [data-status="construcao"] { --status-color: #7DAA2E; --status-bg: #DEF5A8;   --status-fg: var(--ink); }
+  [data-status="construcao"] { --status-color: #5E7F1F; --status-bg: #DEF5A8;   --status-fg: var(--ink); }
   [data-status="estudo"]     { --status-color: #3B6ADB; --status-bg: var(--blue); --status-fg: var(--ink); }
-  [data-status="breve"]      { --status-color: #C49323; --status-bg: #F2D27A;   --status-fg: var(--ink); }
+  [data-status="breve"]      { --status-color: #8A6512; --status-bg: #F2D27A;   --status-fg: var(--ink); }
 
   /* All 4 status tabs — coloured dial + coloured eyebrow, single synced pulse */
   .project-tab[data-status] .tab-eyebrow { color: var(--status-color); }
@@ -2065,10 +2138,14 @@
     color: var(--status-fg);
     border: none;
   }
+  /* On the now-visible placeholder photo, a transparent/dashed tag is
+     unreadable. Use a SOLID status chip (design-system bg/fg pair) + shadow. */
   .map-project[data-status] .project-tag-overlay.ghost {
-    background: transparent;
-    border: 1px dashed var(--status-color);
-    color: var(--status-color);
+    background: var(--status-bg);
+    color: var(--status-fg);
+    border: none;
+    font-weight: 700;
+    filter: drop-shadow(0 4px 12px rgba(10, 11, 13, 0.32));
   }
 
   /* ---------- Selection ---------- */
@@ -2076,9 +2153,13 @@
 
   /* ---------- Responsive (basic) ---------- */
   @media (max-width: 1024px) {
-    .hero-grid, .grid-2, .mmc-header, .process-headline, .sustain-grid, .sustain-header, .community-grid, .footer-cta, .projects-header, .map-stage {
+    .hero-grid, .grid-2, .mmc-header, .process-headline, .sustain-grid, .sustain-header, .community-grid, .laas-grid, .footer-cta, .projects-header, .map-stage {
       grid-template-columns: 1fr;
     }
+    /* LaaS image is purely decorative — once the grid stacks it would sit as a
+       full-width block with no informational value, so drop it on mobile/tablet
+       and let the copy + service tags + supplier CTA carry the section. */
+    .laas-media { display: none; }
     .grid-3, .grid-4, .grid-5, .mmc-cards, .stages, .footer-cols { grid-template-columns: 1fr 1fr; }
     .project-tabs { grid-template-columns: repeat(4, 1fr); }
     .mmc-card, .stage { border-right: 0 !important; border-bottom: 1px solid var(--line); }
@@ -2661,15 +2742,13 @@
 <!-- ============================== S0 NAV ============================== -->
 <nav class="nav">
   <div class="nav-inner">
-    <a href="/" class="nav-logo" aria-label="inHabitus · início">
+    <a href="#" class="nav-logo" aria-label="inHabitus · início">
       <img class="brand-mark" src="_assets/logo/inhabitus.svg" alt="inHabitus" /><sup>®</sup>
     </a>
     <div class="nav-links">
-      <a href="#tecnologia">Tecnologia</a>
-      <a href="#modelo">Cadeia de Valor</a>
-      <a href="#processo">Processo</a>
-      <a href="#sustentabilidade">Sustentabilidade</a>
       <a href="#projetos">Projetos</a>
+      <a href="#tecnologia">Tecnologia</a>
+      <a href="#comunidade">Comunidade</a>
     </div>
     <div class="nav-actions">
       <a class="btn btn-primary nav-cta" href="#contacto">Contacte-nos</a>
@@ -2680,13 +2759,9 @@
   </div>
   <!-- Mobile sheet -->
   <div class="mobile-menu" id="mobile-menu" hidden>
-    <a href="#tecnologia">Tecnologia</a>
-    <a href="#modelo">Cadeia de Valor</a>
-    <a href="#processo">Processo</a>
-    <a href="#sustentabilidade">Sustentabilidade</a>
     <a href="#projetos">Projetos</a>
+    <a href="#tecnologia">Tecnologia</a>
     <a href="#comunidade">Comunidade</a>
-    <a class="btn btn-primary" href="#contacto">Contacte-nos</a>
   </div>
 </nav>
 
@@ -2931,7 +3006,7 @@
             <dt>Total</dt><dd>37 moradias</dd>
             <dt>Tipologias</dt><dd>V2-A · V2-B · V3</dd>
           </dl>
-          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="construcao">Falar sobre Carreço →</a>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="construcao">Pedir Informações →</a>
         </article>
         <article class="map-project" data-project="alfena" data-status="esgotado">
           <span class="project-tag-overlay">Esgotado</span>
@@ -2945,7 +3020,7 @@
             <dt>Total</dt><dd>79 moradias</dd>
             <dt>Tipologias</dt><dd>V2-A · V2-B · V3 · V4</dd>
           </dl>
-          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="geral">Pedir retrospectiva →</a>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="geral">Pedir Informações →</a>
         </article>
         <article class="map-project" data-project="setubal" data-status="breve">
           <span class="project-tag-overlay ghost">Em breve</span>
@@ -2957,7 +3032,7 @@
             <dt>Tipologias</dt><dd>V2 · V3</dd>
           </dl>
           <p class="map-project-note">Inscreva-se para receber detalhes assim que o lançamento for anunciado.</p>
-          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Lista de Espera →</a>
         </article>
         <article class="map-project" data-project="benavente" data-status="breve">
           <span class="project-tag-overlay ghost">Em breve</span>
@@ -2969,7 +3044,7 @@
             <dt>Tipologias</dt><dd>V2 · V3</dd>
           </dl>
           <p class="map-project-note">Inscreva-se para receber detalhes assim que o lançamento for anunciado.</p>
-          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Lista de Espera →</a>
         </article>
         <article class="map-project" data-project="barcelos" data-status="estudo">
           <span class="project-tag-overlay ghost">Em estudo · 2027</span>
@@ -2982,7 +3057,7 @@
             <dt>Início</dt><dd>2027</dd>
           </dl>
           <p class="map-project-note">Cronograma e tipologias finais a confirmar após aprovação de PIP.</p>
-          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Lista de Espera →</a>
         </article>
         <article class="map-project" data-project="gandra" data-status="estudo">
           <span class="project-tag-overlay ghost">Em estudo · 2027</span>
@@ -2995,7 +3070,7 @@
             <dt>Início</dt><dd>2027</dd>
           </dl>
           <p class="map-project-note">Cronograma e tipologias finais a confirmar após aprovação de PIP.</p>
-          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Lista de Espera →</a>
         </article>
         <article class="map-project" data-project="gaia" data-status="estudo">
           <span class="project-tag-overlay ghost">Em estudo · 2028</span>
@@ -3008,7 +3083,7 @@
             <dt>Início</dt><dd>2028</dd>
           </dl>
           <p class="map-project-note">Cronograma e tipologias finais a confirmar após aprovação de PIP.</p>
-          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Lista de Espera →</a>
         </article>
         <article class="map-project" data-project="vizela" data-status="estudo">
           <span class="project-tag-overlay ghost">Em estudo · 2028</span>
@@ -3021,7 +3096,7 @@
             <dt>Início</dt><dd>2028</dd>
           </dl>
           <p class="map-project-note">Cronograma e tipologias finais a confirmar após aprovação de PIP.</p>
-          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Receber novidades →</a>
+          <a class="btn btn-outline cta-to-form" href="#contacto" data-form-topic="proximos">Lista de Espera →</a>
         </article>
       </aside>
     </div>
@@ -3541,6 +3616,39 @@
   </div>
 </section>
 
+<!-- ====================== S6.5 LIVING AS A SERVICE ====================== -->
+<section class="section laas" id="living-as-a-service">
+  <div class="wrap">
+    <div class="laas-grid reveal">
+      <div class="laas-copy">
+        <span class="section-eyebrow">Living as a Service</span>
+        <h2 class="section-title">O resto,<br/><span class="laas-em">deixe connosco.</span></h2>
+        <p class="section-lede">
+          Com a inHabitus, a casa vem com uma plataforma de serviços integrada: limpeza, manutenção, conveniência e comunidade. Viver dá menos trabalho e mais gosto, do primeiro dia em diante.
+        </p>
+        <ul class="laas-chips">
+          <li>Limpeza</li>
+          <li>Lavandaria</li>
+          <li>Manutenção doméstica</li>
+          <li>Apoio familiar</li>
+          <li>Creche</li>
+          <li>Cuidados sénior</li>
+          <li>Alimentação</li>
+          <li>Guest rooms</li>
+          <li>Convívio</li>
+        </ul>
+        <div class="laas-supplier">
+          <p class="laas-supplier-text">Presta um destes serviços? <span>Junte-se à rede de parceiros inHabitus.</span></p>
+          <a class="btn btn-outline cta-to-form laas-supplier-cta" href="#contacto" data-form-topic="fornecedores">Quero ser fornecedor →</a>
+        </div>
+      </div>
+      <div class="laas-media">
+        <img src="_assets/img/laundry_laas.jpg" alt="Pessoa a mergulhar de cabeça numa máquina de lavar, de forma divertida" />
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================== S7 PROJETOS ============================== -->
 
 <!-- ============================== S8 FOOTER ============================== -->
@@ -3627,7 +3735,7 @@
           <span class="form-card-cut-mark" aria-hidden="true"><i></i></span>
           <span class="form-card-eyebrow">Fale connosco</span>
           <h3 class="form-card-title">Vamos falar.</h3>
-          <p class="form-card-lede">Conte-nos sobre o projeto. Estamos a crescer e a receber muitas solicitações; respondemos até 48h úteis.</p>
+          <p class="form-card-lede">Conte-nos sobre o projeto. Respondemos em 24h úteis.</p>
           <form class="footer-form" id="footer-form" onsubmit="event.preventDefault(); this.classList.add('sent');">
             <div class="ff-row-pair">
               <div class="ff-row">
@@ -3651,6 +3759,7 @@
                   <option value="construcao">Empreendimentos em construção</option>
                   <option value="proximos">Próximos empreendimentos</option>
                   <option value="geral">Informação geral</option>
+                  <option value="fornecedores">Prestar serviços · Fornecedores</option>
                   <option value="carreiras">Trabalhar connosco</option>
                   <option value="media">Imprensa / Media Kit</option>
                 </select>
